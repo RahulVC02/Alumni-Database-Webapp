@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css"
+    <title>Alumni Database</title>
+</head>
+<body>
+    <h2>Pick from the list of tables.</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Table Number</th>
+                <th>Table Name</th>
+                <th hidden>View Entries</th>
+                <th hidden>View Schema</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for row in table_data %}
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>
+                    {{row[1]}}
+                </td>
+                <td class="left--marg">
+                    <form action="/tables" method="POST">
+                        <button type="submit" name="entries" data-id="{{row1}}">View Entries</button>
+                    </form>
+                </td>
+                <td class="left--marg">
+                    <form action="/tables" method="POST"></form>
+                        <button type="submit" name="schema" data-id={{row1}}>View Schema</button>
+                    </form>
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</body>
+</html>
