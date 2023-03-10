@@ -66,7 +66,30 @@ def tables():
 @app.route('/tables', methods =['POST'])
 def tables_post():
     x = request.form
-    print(x)
+    
+    table_name = x['tableName']
+    print(table_name)
+    print(type(table_name))
+
+    table_name_string = str(table_name)
+    table_name_string = table_name_string.encode('utf-8').decode('utf-8')
+    table_name_string = str(table_name_string)
+    
+    print(table_name_string)
+    print(type(table_name_string))
+
+    cur = mysql.connection.cursor()
+    cur.execute(f"SELECT * FROM {table_name_string}")
+    
+    
+    mysql.connection.commit()
+    
+
+    table_data = cur.fetchall()
+    cur.close()
+
+    return render_template('display_entries.html', userDetails=table_data, table_name=table_name_string)
+    
 
 
 

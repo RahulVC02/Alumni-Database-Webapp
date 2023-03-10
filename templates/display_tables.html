@@ -14,8 +14,7 @@
             <tr>
                 <th>Table Number</th>
                 <th>Table Name</th>
-                <th hidden>View Entries</th>
-                <th hidden>View Schema</th>
+                
             </tr>
         </thead>
 
@@ -25,20 +24,15 @@
                 <td>{{row[0]}}</td>
                 <td>
                     {{row[1]}}
-                </td>
-                <td class="left--marg">
-                    <form action="/tables" method="POST">
-                        <button type="submit" name="entries" data-id="{{row1}}">View Entries</button>
-                    </form>
-                </td>
-                <td class="left--marg">
-                    <form action="/tables" method="POST"></form>
-                        <button type="submit" name="schema" data-id={{row1}}>View Schema</button>
-                    </form>
-                </td>
+                </td>               
             </tr>
             {%endfor%}
         </tbody>
     </table>
+    <form action="/tables" method="POST">
+        <input type="text" name="tableName" placeholder="Table Name">
+        <button type="submit" name="schema">View Schema</button>
+        <button type="submit" name="entries">View Entries</button>
+    </form>
 </body>
 </html>

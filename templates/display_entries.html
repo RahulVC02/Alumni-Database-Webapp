@@ -7,11 +7,20 @@
     <title>Alumni Database</title>
 </head>
 <body>
+    <h2>{{table_name}}</h2>
     {% for user in userDetails %}
-    <tr>
-        <td> {{user[0]}} </td>
-        <td> {{user[1]}} </td>
-    </tr>
-    {% endfor %}
+    <table>
+        <tr>
+            <!-- <td> {{user[0]}} </td>
+            <td> {{user[1]}} </td> -->
+    
+            {% for data in user%}
+            <td>{{data}}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+
+    </table>
+    
 </body>
 </html>
