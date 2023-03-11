@@ -7,14 +7,22 @@
     <title>Alumni Database</title>
 </head>
 <body>
-    <h2>{{table_name}}</h2>
-    {% for user in userDetails %}
+    <h2>{{table_name}} 
+        : {{EntriesOrSchema}}</h2>
     <table>
+        <thead>
+            <tr>
+                {%for col_name in table_col_names%}
+                <th>{{col_name}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+
+
+        {% for row in userDetails %}
         <tr>
-            <!-- <td> {{user[0]}} </td>
-            <td> {{user[1]}} </td> -->
-    
-            {% for data in user%}
+            
+            {% for data in row%}
             <td>{{data}}</td>
             {% endfor %}
         </tr>

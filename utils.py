@@ -5,8 +5,6 @@ import yaml
 # Desc: Utility functions for the webapp
 
 
-# return a HTML table of all the tables in the database
-def my_sql_to_html_table():
-    
+   
     
 
