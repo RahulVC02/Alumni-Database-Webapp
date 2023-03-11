@@ -1,7 +1,0 @@
-Add GET routes for
-
-/tables/edit, 
-/tables/edit/insert, 
-/tables/edit/update
-
-for better UX.
