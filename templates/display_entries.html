@@ -83,6 +83,20 @@
 
         </div>
 
+        {% elif op=='delete' %}
+        <div class="container">
+            <h4>DELETE FROM {{table_name}}</h4>
+            <h4>WHERE</h4>
+
+            <form action="/tables/edit/delete" method="POST">
+            <input type="text" name="condition" placeholder="condition">
+
+            <input type="hidden" name='table_name' value={{table_name}}>
+            <button type="submit">Execute</button>
+            </form>
+
+        </div>
+
         {% endif %}
     
     {% endif %}
