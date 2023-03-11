@@ -157,6 +157,9 @@ def tables_edit():
     elif(pressed=='delete'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Delete",
                                display_edit_buttons="NO",display_edit_fields="YES", op='delete')
+    elif(pressed=='rename'):
+        return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Rename",
+                               display_edit_buttons="NO",display_edit_fields="YES", op='rename')
     else:
         return
         
@@ -338,6 +341,52 @@ def edit_delete():
     
     return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=table_name,
                            table_col_names=TABLE_COLUMN_NAMES)
+
+
+
+@app.route('/tables/edit/rename', methods =['POST'])
+
+def edit_rename():
+    x = request.form
+    old_table_name = x['old_table_name']
+    new_table_name = x['new_table_name']
+
+
+    ##Table Before Insertion
+    cur = mysql.connection.cursor()
+    cur.execute(f"SELECT * FROM {old_table_name}")
+    mysql.connection.commit()
+    table_data_before = cur.fetchall()
+
+
+
+    #getting column names
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", old_table_name,))
+    table_column_names_tuples = cursor.fetchall()
+    TABLE_COLUMN_NAMES =[]
+
+    for dict in table_column_names_tuples:
+        y = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(y)
+
+
+    #making query
+    query = "RENAME TABLE "+old_table_name+" TO " + new_table_name
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    mysql.connection.commit()
+
+
+    #table after query execution
+    cur = mysql.connection.cursor()
+    cur.execute(f"SELECT * FROM {new_table_name}")
+    mysql.connection.commit()
+    table_data_after = cur.fetchall()
+
+    
+    return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=new_table_name,
+                           table_col_names=TABLE_COLUMN_NAMES, old_table_name=old_table_name,new_table_name=new_table_name)
 
 
 

@@ -14,6 +14,10 @@
 
         <div>
         <h3>Before</h3>
+        {% if old_table_name %}
+        <h3>{{old_table_name}}</h3>
+        {% else %}
+        {% endif %}
         <table>
             <thead>
                 <tr>
@@ -39,6 +43,10 @@
 
         <div>
         <h3>After</h3>
+        {% if new_table_name %}
+        <h3>{{new_table_name}}</h3>
+        {% else %}
+        {% endif %}
         <table>
             <thead>
                 <tr>
