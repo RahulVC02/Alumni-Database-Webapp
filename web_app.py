@@ -151,7 +151,13 @@ def tables_edit():
     if(pressed=='insert'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Insert",
                                display_edit_buttons="NO",display_edit_fields="YES", op='insert')
-    
+    elif(pressed=='update'):
+        return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Update",
+                               display_edit_buttons="NO",display_edit_fields="YES", op='update')
+    else:
+        return
+
+
 
 
 
@@ -207,7 +213,78 @@ def edit_insert():
 
     
     return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=table_name,
-                           table_col_names=TABLE_COLUMN_NAMES)    
+                           table_col_names=TABLE_COLUMN_NAMES)
+
+
+
+
+@app.route('/tables/edit/update', methods =['POST'])
+
+def edit_update():
+    x = request.form
+    table_name = x['table_name']
+    condition = x['condition']
+
+
+    ##Table Before Insertion
+    cur = mysql.connection.cursor()
+    cur.execute(f"SELECT * FROM {table_name}")
+    mysql.connection.commit()
+    table_data_before = cur.fetchall()
+
+
+
+    #getting column names
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    table_column_names_tuples = cursor.fetchall()
+    TABLE_COLUMN_NAMES =[]
+
+    for dict in table_column_names_tuples:
+        y = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(y)
+
+
+    #filling new values
+
+    NEW_VALUES =[]
+    for i in range(len(TABLE_COLUMN_NAMES)):
+        if(x[TABLE_COLUMN_NAMES[i]]==""):
+            TABLE_COLUMN_NAMES[i]= "remove"
+        else:
+            NEW_VALUES.append(x[TABLE_COLUMN_NAMES[i]])
+    
+
+    #changing column names depending on participation of fields
+    NEW_COLUMN_NAMES =[]
+    for name in TABLE_COLUMN_NAMES:
+        if(name!="remove"):
+            NEW_COLUMN_NAMES.append(name)
+
+    #statement clauses
+    strings=[]
+    for i in range(len(NEW_COLUMN_NAMES)):
+        y = NEW_COLUMN_NAMES[i]+"="+NEW_VALUES[i]
+        strings.append(y)
+    
+    
+    #making query
+    query = "UPDATE "+table_name+" SET "  + ", ".join(strings) + " WHERE " + condition
+    
+    cur = mysql.connection.cursor()
+    cur.execute(query)
+    mysql.connection.commit()
+
+
+    #table after query execution
+    cur = mysql.connection.cursor()
+    cur.execute(f"SELECT * FROM {table_name}")
+    mysql.connection.commit()
+    table_data_after = cur.fetchall()
+
+    
+    return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=table_name,
+                           table_col_names=TABLE_COLUMN_NAMES)
     
 
 

@@ -65,7 +65,23 @@
 
         </div>
 
-        {% else %}
+        {% elif op=='update' %}
+        <div class="container">
+            <h4>UPDATE {{table_name}}</h4>
+            <h4>SET</h4>
+
+            <form action="/tables/edit/update" method="POST">
+            {%for col_name in table_col_names%}
+            <input type="text" name={{col_name}} placeholder={{col_name}}>
+            {% endfor %}
+
+            <input type="text" name="condition" placeholder="condition">
+
+            <input type="hidden" name='table_name' value={{table_name}}>
+            <button type="submit">Execute</button>
+            </form>
+
+        </div>
 
         {% endif %}
     
