@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css">
+    <title>Alumni Database</title>
+</head>
+<body>
+    <h2>{{table_name}}</h2>
+    
+    <div class="container">
+
+        <div>
+        <h3>Before</h3>
+        <table>
+            <thead>
+                <tr>
+                    {%for col_name in table_col_names%}
+                    <th>{{col_name}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+
+            {% for row in table_before %}
+            <tr>
+                
+                {% for data in row%}
+                <td>{{data}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+
+        </table>
+        </div>
+
+
+        <div>
+        <h3>After</h3>
+        <table>
+            <thead>
+                <tr>
+                    {%for col_name in table_col_names%}
+                    <th>{{col_name}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+
+            {% for j in table_after %}
+            <tr>
+                
+                {% for data in j%}
+                <td>{{data}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+
+        </table>
+        </div>
+        
+    </div>
+    
+</body>
+</html>

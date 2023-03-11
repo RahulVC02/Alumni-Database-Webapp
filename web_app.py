@@ -90,7 +90,8 @@ def tables_post():
         
         cur.close()
 
-        return render_template('display_entries.html', userDetails=table_data, table_name=table_name_string, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries")
+        return render_template('display_entries.html', userDetails=table_data, table_name=table_name_string, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+                               display_edit_buttons="YES",display_edit_fields="NO")
         
     else:
 
@@ -101,7 +102,115 @@ def tables_post():
         TABLE_COLUMN_NAMES = ["Field","Type","Null","Key","Default","Extra"]
         cur.close()
 
-        return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name_string, EntriesOrSchema="Schema")
+        return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name_string, EntriesOrSchema="Schema",
+                               display_edit_buttons="NO",display_edit_fields="NO")
+
+
+
+
+@app.route('/tables/edit', methods =['POST'])
+
+def tables_edit():
+    x = request.form
+    pressed=None
+    table_name=None
+
+
+    ##which button was pressed    
+    if(x.get('insert')==None):
+        if(x.get('update')==None):
+            if(x.get('delete')==None):
+                pressed='rename'
+            else:
+                pressed='delete'
+        else:
+            pressed='update'
+    else:
+        pressed='insert'
+    
+
+    #finding column names
+    table_name = x[pressed]
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    table_column_names_tuples = cursor.fetchall()
+    TABLE_COLUMN_NAMES =[]
+
+    for dict in table_column_names_tuples:
+        y = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(y)
+    
+
+    #finding table
+    cur = mysql.connection.cursor()
+    cur.execute(f"SELECT * FROM {table_name}")
+    mysql.connection.commit()
+    table_data = cur.fetchall()    
+
+    
+    if(pressed=='insert'):
+        return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Insert",
+                               display_edit_buttons="NO",display_edit_fields="YES", op='insert')
+    
+
+
+
+
+
+
+@app.route('/tables/edit/insert', methods =['POST'])
+
+def edit_insert():
+    x = request.form
+    print(x)
+    table_name = x['table_name']
+
+
+    ##Table Before Insertion
+    cur = mysql.connection.cursor()
+    cur.execute(f"SELECT * FROM {table_name}")
+    mysql.connection.commit()
+    table_data_before = cur.fetchall()
+
+
+
+    #getting column names
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    table_column_names_tuples = cursor.fetchall()
+    TABLE_COLUMN_NAMES =[]
+
+    for dict in table_column_names_tuples:
+        y = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(y)
+
+    #filling new values
+    NEW_VALUES =[]
+    for col in TABLE_COLUMN_NAMES:
+        NEW_VALUES.append(x[col])
+    
+
+    #making the query
+    query = "INSERT INTO "+ table_name+"(" + ", ".join(TABLE_COLUMN_NAMES) + ") VALUES (" + ", ".join(["%s" for _ in range(len(TABLE_COLUMN_NAMES))]) + ")"
+    
+    #executing query
+    cur = mysql.connection.cursor()
+    cur.execute(query,NEW_VALUES)
+    mysql.connection.commit()
+
+
+    #table after query execution
+    cur = mysql.connection.cursor()
+    cur.execute(f"SELECT * FROM {table_name}")
+    mysql.connection.commit()
+    table_data_after = cur.fetchall()
+
+    
+    return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=table_name,
+                           table_col_names=TABLE_COLUMN_NAMES)    
+    
+
+
 
 
 if __name__ == '__main__':

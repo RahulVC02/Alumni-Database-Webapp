@@ -29,6 +29,50 @@
         {% endfor %}
 
     </table>
+
+
+
+
+
+    {% if display_edit_buttons=="YES" %}
+
+    <div class="container">
+        <form action="/tables/edit" method="POST">
+            <button type="submit" name="insert" value={{table_name}}>Insert</button>
+            <button type="submit" name="update" value={{table_name}}>Update</button>
+            <button type="submit" name="delete" value={{table_name}}>Delete</button>
+            <button type="submit" name="rename" value={{table_name}}>Rename</button>
+        </form>
+    </div>
+
+
+    {% elif display_edit_fields=="YES" %}
+
+        {% if op=='insert' %}
+        <div class="container">
+            <h4>INSERT INTO</h4>
+            <h4>{{table_name}}</h4>
+
+            <form action="/tables/edit/insert" method="POST">
+            {%for col_name in table_col_names%}
+            <input type="text" name={{col_name}} placeholder={{col_name}}>
+            {% endfor %}
+
+            <input type="hidden" name='table_name' value={{table_name}}>
+
+            <button type="submit">Execute</button>
+            </form>
+
+        </div>
+
+        {% else %}
+
+        {% endif %}
+    
+    {% endif %}
+
+
+    
     
 </body>
 </html>
