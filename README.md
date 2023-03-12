@@ -1,2 +1,3 @@
-# dbms_a3
-dbms_a3 repo
+# DBMS Assignment 3
+
+Made with Flask and MySQL
