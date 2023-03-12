@@ -11,3 +11,5 @@ for better UX.
 3) Add dynamic route names for query execute endpoints
 
 4) Add BACK buttons
+
+5) Add RENAME COLUMNS support
