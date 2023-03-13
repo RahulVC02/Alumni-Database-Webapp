@@ -1,15 +1,5 @@
-1) Add GET routes for
+1) Add errors and bad input page
 
-/tables/edit, 
-/tables/edit/insert, 
-/tables/edit/update
+2) Add RENAME COLUMNS support
 
-for better UX.
-    
-2) Add errors and bad input page
-
-3) Add dynamic route names for query execute endpoints
-
-4) Add BACK buttons
-
-5) Add RENAME COLUMNS support
+3) Make a helper functions call for modular code
