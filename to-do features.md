@@ -1,5 +1,2 @@
-1) Add errors and bad input page
-
-2) Add RENAME COLUMNS support
-
-3) Make a helper functions call for modular code
+1) Add RENAME COLUMNS support
+2) Update utils with helper functions for getting table entries, getting column names for modular code

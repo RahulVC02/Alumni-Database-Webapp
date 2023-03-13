@@ -13,7 +13,13 @@ app.config['MYSQL_PASSWORD'] = db['mysql_password']
 app.config['MYSQL_DB'] = db['mysql_db']
 
 mysql = MySQL(app)
-entries_page = None
+
+
+#add errors page
+
+# @app.errorhandler()
+# def page_not_found(e):
+#     return render_template('errors.html'), 404
 
 
 #defining home route
@@ -118,36 +124,46 @@ def tables_post():
     if(button_pressed=='entries'):
 
         cur = mysql.connection.cursor()
-        cur.execute(f"SELECT * FROM {table_name_string}")
-        mysql.connection.commit()
-        table_data = cur.fetchall()
+        try:
+            cur.execute(f"SELECT * FROM {table_name_string}")
+            mysql.connection.commit()
+            table_data = cur.fetchall()
 
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name_string,))
-        table_column_names_tuples = cursor.fetchall()
-        TABLE_COLUMN_NAMES =[]
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name_string,))
+            table_column_names_tuples = cursor.fetchall()
+            TABLE_COLUMN_NAMES =[]
 
-        for dict in table_column_names_tuples:
-            x = dict['COLUMN_NAME']
-            TABLE_COLUMN_NAMES.append(x)
-        
-        cur.close()
+            for dict in table_column_names_tuples:
+                x = dict['COLUMN_NAME']
+                TABLE_COLUMN_NAMES.append(x)
+            
+            cur.close()
 
-        return render_template('display_entries.html', userDetails=table_data, table_name=table_name_string, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                               display_edit_buttons="YES",display_edit_fields="NO")
+            return render_template('display_entries.html', userDetails=table_data, table_name=table_name_string, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+                                display_edit_buttons="YES",display_edit_fields="NO")
+
+        except Exception as e:
+
+
+            return render_template('errors.html', errorMessage="Table not defined")
+
         
         
     else:
 
         cur = mysql.connection.cursor()
-        cur.execute(f"SHOW COLUMNS FROM {table_name_string}")
-        mysql.connection.commit()
-        table_data = cur.fetchall()
-        TABLE_COLUMN_NAMES = ["Field","Type","Null","Key","Default","Extra"]
-        cur.close()
+        try:
+            cur.execute(f"SHOW COLUMNS FROM {table_name_string}")
+            mysql.connection.commit()
+            table_data = cur.fetchall()
+            TABLE_COLUMN_NAMES = ["Field","Type","Null","Key","Default","Extra"]
+            cur.close()
 
-        return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name_string, EntriesOrSchema="Schema",
-                               display_edit_buttons="NO",display_edit_fields="NO")
+            return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name_string, EntriesOrSchema="Schema",
+                                display_edit_buttons="NO",display_edit_fields="NO")
+        except:
+            return render_template('errors.html', errorMessage="Table not defined")
 
 
 
@@ -251,19 +267,22 @@ def edit_insert():
     
     #executing query
     cur = mysql.connection.cursor()
-    cur.execute(query,NEW_VALUES)
-    mysql.connection.commit()
+    try:
+        cur.execute(query,NEW_VALUES)
+        mysql.connection.commit()
 
 
-    #table after query execution
-    cur = mysql.connection.cursor()
-    cur.execute(f"SELECT * FROM {table_name}")
-    mysql.connection.commit()
-    table_data_after = cur.fetchall()
+        #table after query execution
+        cur = mysql.connection.cursor()
+        cur.execute(f"SELECT * FROM {table_name}")
+        mysql.connection.commit()
+        table_data_after = cur.fetchall()
 
-    
-    return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=table_name,
-                           table_col_names=TABLE_COLUMN_NAMES)
+        
+        return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=table_name,
+                            table_col_names=TABLE_COLUMN_NAMES)
+    except:
+        return render_template('errors.html', errorMessage="Input Error- Re-check your input against the schema.")
 
 
 
@@ -324,20 +343,23 @@ def edit_update():
     #making query
     query = "UPDATE "+table_name+" SET "  + ", ".join(strings) + " WHERE " + condition
     
-    cur = mysql.connection.cursor()
-    cur.execute(query)
-    mysql.connection.commit()
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        mysql.connection.commit()
 
 
-    #table after query execution
-    cur = mysql.connection.cursor()
-    cur.execute(f"SELECT * FROM {table_name}")
-    mysql.connection.commit()
-    table_data_after = cur.fetchall()
+        #table after query execution
+        cur = mysql.connection.cursor()
+        cur.execute(f"SELECT * FROM {table_name}")
+        mysql.connection.commit()
+        table_data_after = cur.fetchall()
 
-    
-    return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=table_name,
-                           table_col_names=TABLE_COLUMN_NAMES)   
+        
+        return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=table_name,
+                            table_col_names=TABLE_COLUMN_NAMES)   
+    except:
+        return render_template('errors.html', errorMessage="Update Error- Re-check your update value types/condition against the schema and current database entries.")
 
 
 
@@ -373,20 +395,24 @@ def edit_delete():
 
     #making query
     query = "DELETE FROM "+table_name+" WHERE " + condition
-    cur = mysql.connection.cursor()
-    cur.execute(query)
-    mysql.connection.commit()
+
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        mysql.connection.commit()
 
 
-    #table after query execution
-    cur = mysql.connection.cursor()
-    cur.execute(f"SELECT * FROM {table_name}")
-    mysql.connection.commit()
-    table_data_after = cur.fetchall()
+        #table after query execution
+        cur = mysql.connection.cursor()
+        cur.execute(f"SELECT * FROM {table_name}")
+        mysql.connection.commit()
+        table_data_after = cur.fetchall()
 
-    
-    return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=table_name,
-                           table_col_names=TABLE_COLUMN_NAMES)
+        
+        return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=table_name,
+                            table_col_names=TABLE_COLUMN_NAMES)
+    except:
+        return render_template('errors.html', errorMessage="Delete Error- Re-check your delete condition against the schema and current database entries.")
 
 
 
@@ -398,7 +424,7 @@ def edit_delete():
 
 def edit_rename():
     x = request.form
-    old_table_name = x['old_table_name']
+    old_table_name = x['table_name']
     new_table_name = x['new_table_name']
 
 
@@ -421,23 +447,25 @@ def edit_rename():
         TABLE_COLUMN_NAMES.append(y)
 
 
-    #making query
-    query = "RENAME TABLE "+old_table_name+" TO " + new_table_name
-    cur = mysql.connection.cursor()
-    cur.execute(query)
-    mysql.connection.commit()
+    try:
+        #making query
+        query = "RENAME TABLE "+old_table_name+" TO " + new_table_name
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        mysql.connection.commit()
 
 
-    #table after query execution
-    cur = mysql.connection.cursor()
-    cur.execute(f"SELECT * FROM {new_table_name}")
-    mysql.connection.commit()
-    table_data_after = cur.fetchall()
+        #table after query execution
+        cur = mysql.connection.cursor()
+        cur.execute(f"SELECT * FROM {new_table_name}")
+        mysql.connection.commit()
+        table_data_after = cur.fetchall()
 
-    
-    return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=new_table_name,
-                           table_col_names=TABLE_COLUMN_NAMES, old_table_name=old_table_name,new_table_name=new_table_name)
-
+        
+        return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=new_table_name,
+                            table_col_names=TABLE_COLUMN_NAMES, old_table_name=old_table_name,new_table_name=new_table_name)
+    except:
+        return render_template('errors.html', errorMessage="Rename Error- Re-check your input for New Table Name")
 
 
 
