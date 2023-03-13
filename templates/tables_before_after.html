@@ -18,7 +18,7 @@
         <h3>{{old_table_name}}</h3>
         {% else %}
         {% endif %}
-        <table>
+        <table border="1">
             <thead>
                 <tr>
                     {%for col_name in table_col_names%}
@@ -47,7 +47,7 @@
         <h3>{{new_table_name}}</h3>
         {% else %}
         {% endif %}
-        <table>
+        <table border="1">
             <thead>
                 <tr>
                     {%for col_name in table_col_names%}
@@ -70,6 +70,15 @@
         </div>
         
     </div>
+
+
+    <form action="/tables" method="GET">
+        <button type="submit">Go to Tables List</button>
+    </form>
+
+    <form action="/tables/entries/{{table_name}}" method="POST">
+        <button type="submit">Go Back to {{table_name}} table</button>
+    </form>
     
 </body>
 </html>

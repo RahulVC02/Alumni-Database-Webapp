@@ -3,6 +3,7 @@ from flask_mysqldb import MySQL
 import yaml
 import MySQLdb.cursors
 
+
 app = Flask(__name__)
 
 db = yaml.load(open('credentials.yaml'), Loader=yaml.FullLoader)
@@ -12,28 +13,36 @@ app.config['MYSQL_PASSWORD'] = db['mysql_password']
 app.config['MYSQL_DB'] = db['mysql_db']
 
 mysql = MySQL(app)
+entries_page = None
 
 
-@app.route('/', methods=['POST'])
-def home_post():
-    # Fetch form data
-    # userDetails = request.form
-    # name = userDetails['name']
-    # email = userDetails['email']
-    # cur = mysql.connection.cursor()
-    # cur.execute("INSERT INTO users(name, email) VALUES(%s, %s)",(name, email))
-    # mysql.connection.commit()
-    # cur.close()
-
-
-    return redirect('/tables')
-    
-
+#defining home route
 @app.route('/', methods =['GET'])
 def index():
     return render_template('index.html')
 
 
+
+#directing to team page or tables page
+
+@app.route('/', methods=['POST'])
+def home_post():
+    x = request.form
+
+    if(x.get('edit')==None):
+        return redirect('/team')
+    else:
+        return redirect('/tables')
+    
+
+#rendering team_details page
+@app.route('/team', methods=['GET'])
+def team():
+    return render_template('team_details.html')
+
+
+
+#rendering the list of tables in the database
 @app.route('/tables', methods =['GET'])
 def tables():
     cursor = mysql.connection.cursor()
@@ -53,6 +62,40 @@ def tables():
 
 
 
+
+#dynamic route for rendering updated tables after performing an operation (Insert, Delete, Update or Rename)
+@app.route('/tables/entries/<table_name>', methods =['POST'] )
+def dynamic_table(table_name):
+
+    print("Hello")
+    table_name = table_name
+
+    table_name_string = str(table_name)
+    table_name_string = table_name_string.encode('utf-8').decode('utf-8')
+    table_name_string = str(table_name_string)
+
+    cur = mysql.connection.cursor()
+    cur.execute(f"SELECT * FROM {table_name_string}")
+    mysql.connection.commit()
+    table_data = cur.fetchall()
+
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name_string,))
+    table_column_names_tuples = cursor.fetchall()
+    TABLE_COLUMN_NAMES =[]
+
+    for dict in table_column_names_tuples:
+        x = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(x)
+    
+    cur.close()
+    return render_template('display_entries.html', userDetails=table_data, table_name=table_name_string, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+                            display_edit_buttons="YES",display_edit_fields="NO")
+
+
+
+#updating rendered output based on button pressed.
+
 @app.route('/tables', methods =['POST'])
 def tables_post():
     x = request.form
@@ -70,8 +113,8 @@ def tables_post():
     table_name_string = str(table_name_string)
 
 
+    #determing rendered output based on button pressed- View Schema or View Entries
 
-    
     if(button_pressed=='entries'):
 
         cur = mysql.connection.cursor()
@@ -93,6 +136,7 @@ def tables_post():
         return render_template('display_entries.html', userDetails=table_data, table_name=table_name_string, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
                                display_edit_buttons="YES",display_edit_fields="NO")
         
+        
     else:
 
         cur = mysql.connection.cursor()
@@ -107,6 +151,8 @@ def tables_post():
 
 
 
+
+#updating rendered output based on Operations button pressed.
 
 @app.route('/tables/edit', methods =['POST'])
 
@@ -147,7 +193,8 @@ def tables_edit():
     mysql.connection.commit()
     table_data = cur.fetchall()    
 
-    
+
+    #updating rendered output based on the button pressed    
     if(pressed=='insert'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Insert",
                                display_edit_buttons="NO",display_edit_fields="YES", op='insert')
@@ -161,15 +208,11 @@ def tables_edit():
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Rename",
                                display_edit_buttons="NO",display_edit_fields="YES", op='rename')
     else:
-        return
+        return render_template('errors.html')
         
 
 
-
-
-
-
-
+#insert page render logic
 
 @app.route('/tables/edit/insert', methods =['POST'])
 
@@ -224,6 +267,9 @@ def edit_insert():
 
 
 
+
+
+#update page render logic
 
 @app.route('/tables/edit/update', methods =['POST'])
 
@@ -296,7 +342,7 @@ def edit_update():
 
 
 
-
+#delete page render logic
 
 @app.route('/tables/edit/delete', methods =['POST'])
 
@@ -344,6 +390,10 @@ def edit_delete():
 
 
 
+
+
+#rename page render logic
+
 @app.route('/tables/edit/rename', methods =['POST'])
 
 def edit_rename():
@@ -387,6 +437,8 @@ def edit_rename():
     
     return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=new_table_name,
                            table_col_names=TABLE_COLUMN_NAMES, old_table_name=old_table_name,new_table_name=new_table_name)
+
+
 
 
 
