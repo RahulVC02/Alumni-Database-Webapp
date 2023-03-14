@@ -51,20 +51,58 @@ def team():
 #rendering the list of tables in the database
 @app.route('/tables', methods =['GET'])
 def tables():
-    cursor = mysql.connection.cursor()
-    cursor.execute("SHOW TABLES")
+    args = request.args
+    table_name = args.get('tableName', default=None, type=str)
+    if table_name is None:
+        cursor = mysql.connection.cursor()
+        cursor.execute("SHOW TABLES")
 
-    tables = cursor.fetchall()
-    cursor.close()
-    table_names=[]
+        tables = cursor.fetchall()
+        cursor.close()
+        table_names=[]
 
-    for i in range(len(tables)):
-        row =[]
-        row.append(i+1)
-        row.append(tables[i][0])
-        table_names.append(row)
-    
-    return render_template('display_tables.html',table_data=table_names)
+        for i in range(len(tables)):
+            table_names.append(tables[i][0])
+        
+        cur = mysql.connection.cursor()
+        schema = []
+        for table_name in table_names:
+            cur.execute(f"SHOW COLUMNS FROM {table_name}")
+            mysql.connection.commit()
+            schema.append(cur.fetchall())
+        cur.close()
+
+            # return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Schema",
+            #                     display_edit_buttons="NO",display_edit_fields="NO")
+        TABLE_COLUMN_NAMES = ["Field","Type","Null","Key"]
+        return render_template('display_tables.html',table_names=table_names, schema=schema, table_col_names=TABLE_COLUMN_NAMES, len=len(table_names), len_col=len(TABLE_COLUMN_NAMES))
+    else:
+        cur = mysql.connection.cursor()
+        try:
+            cur.execute(f"SELECT * FROM {table_name}")
+            mysql.connection.commit()
+            table_data = cur.fetchall()
+
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+            table_column_names_tuples = cursor.fetchall()
+            TABLE_COLUMN_NAMES =[]
+
+            for dict in table_column_names_tuples:
+                x = dict['COLUMN_NAME']
+                TABLE_COLUMN_NAMES.append(x)
+            
+            cur.close()
+
+            return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+                                display_edit_buttons="YES",display_edit_fields="NO")
+
+        except Exception as e:
+
+
+            return render_template('errors.html', errorMessage="Table not defined")
+
+
 
 
 
@@ -72,8 +110,6 @@ def tables():
 #dynamic route for rendering updated tables after performing an operation (Insert, Delete, Update or Rename)
 @app.route('/tables/entries/<table_name>', methods =['POST'] )
 def dynamic_table(table_name):
-
-    print("Hello")
     table_name = table_name
 
     table_name_string = str(table_name)
@@ -102,68 +138,68 @@ def dynamic_table(table_name):
 
 #updating rendered output based on button pressed.
 
-@app.route('/tables', methods =['POST'])
-def tables_post():
-    x = request.form
+# @app.route('/tables', methods =['POST'])
+# def tables_post():
+#     x = request.form
 
-    button_pressed=None
-    table_name = x['tableName']
+#     button_pressed=None
+#     table_name = x['tableName']
     
-    if(x.get('entries')==None):
-        button_pressed='schema'
-    else:
-        button_pressed='entries'
+#     if(x.get('entries')==None):
+#         button_pressed='schema'
+#     else:
+#         button_pressed='entries'
        
-    table_name_string = str(table_name)
-    table_name_string = table_name_string.encode('utf-8').decode('utf-8')
-    table_name_string = str(table_name_string)
+#     table_name_string = str(table_name)
+#     table_name_string = table_name_string.encode('utf-8').decode('utf-8')
+#     table_name_string = str(table_name_string)
 
 
-    #determing rendered output based on button pressed- View Schema or View Entries
+#     #determing rendered output based on button pressed- View Schema or View Entries
 
-    if(button_pressed=='entries'):
+#     if(button_pressed=='entries'):
 
-        cur = mysql.connection.cursor()
-        try:
-            cur.execute(f"SELECT * FROM {table_name_string}")
-            mysql.connection.commit()
-            table_data = cur.fetchall()
+#         cur = mysql.connection.cursor()
+#         try:
+#             cur.execute(f"SELECT * FROM {table_name_string}")
+#             mysql.connection.commit()
+#             table_data = cur.fetchall()
 
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name_string,))
-            table_column_names_tuples = cursor.fetchall()
-            TABLE_COLUMN_NAMES =[]
+#             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+#             cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name_string,))
+#             table_column_names_tuples = cursor.fetchall()
+#             TABLE_COLUMN_NAMES =[]
 
-            for dict in table_column_names_tuples:
-                x = dict['COLUMN_NAME']
-                TABLE_COLUMN_NAMES.append(x)
+#             for dict in table_column_names_tuples:
+#                 x = dict['COLUMN_NAME']
+#                 TABLE_COLUMN_NAMES.append(x)
             
-            cur.close()
+#             cur.close()
 
-            return render_template('display_entries.html', userDetails=table_data, table_name=table_name_string, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                display_edit_buttons="YES",display_edit_fields="NO")
+#             return render_template('display_entries.html', userDetails=table_data, table_name=table_name_string, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+#                                 display_edit_buttons="YES",display_edit_fields="NO")
 
-        except Exception as e:
+#         except Exception as e:
 
 
-            return render_template('errors.html', errorMessage="Table not defined")
+#             return render_template('errors.html', errorMessage="Table not defined")
 
         
         
-    else:
+#     else:
 
-        cur = mysql.connection.cursor()
-        try:
-            cur.execute(f"SHOW COLUMNS FROM {table_name_string}")
-            mysql.connection.commit()
-            table_data = cur.fetchall()
-            TABLE_COLUMN_NAMES = ["Field","Type","Null","Key","Default","Extra"]
-            cur.close()
+#         cur = mysql.connection.cursor()
+#         try:
+#             cur.execute(f"SHOW COLUMNS FROM {table_name_string}")
+#             mysql.connection.commit()
+#             table_data = cur.fetchall()
+#             TABLE_COLUMN_NAMES = ["Field","Type","Null","Key","Default","Extra"]
+#             cur.close()
 
-            return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name_string, EntriesOrSchema="Schema",
-                                display_edit_buttons="NO",display_edit_fields="NO")
-        except:
-            return render_template('errors.html', errorMessage="Table not defined")
+#             return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name_string, EntriesOrSchema="Schema",
+#                                 display_edit_buttons="NO",display_edit_fields="NO")
+#         except:
+#             return render_template('errors.html', errorMessage="Table not defined")
 
 
 

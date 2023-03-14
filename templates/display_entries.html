@@ -1,126 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/style.css">
-    <title>Alumni Database</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/style.css')}}">
+    <title>{{tableName}}</title>
 </head>
-<body>
-    <h2>{{table_name}} 
-        : {{EntriesOrSchema}}</h2>
-    <table border="1">
-        <thead>
+
+<body class="p-0 m-0 flex bg-[var(--color1)]">
+    <div class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
+        <div class="capitalize text-center text-3xl mb-6">{{table_name}}</div>
+        <table border="1">
+            <thead>
+                <tr>
+                    {%for col_name in table_col_names%}
+                    <th>{{col_name}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+
+            {% for row in userDetails %}
             <tr>
-                {%for col_name in table_col_names%}
-                <th>{{col_name}}</th>
+
+                {% for data in row%}
+                <td>{{data}}</td>
                 {% endfor %}
             </tr>
-        </thead>
-
-
-        {% for row in userDetails %}
-        <tr>
-            
-            {% for data in row%}
-            <td>{{data}}</td>
             {% endfor %}
-        </tr>
-        {% endfor %}
 
-    </table>
-
-
-
-
-
-    {% if display_edit_buttons=="YES" %}
-
-    <div class="container">
-        <form action="/tables/edit" method="POST">
-            <button type="submit" name="insert" value={{table_name}}>Insert</button>
-            <button type="submit" name="update" value={{table_name}}>Update</button>
-            <button type="submit" name="delete" value={{table_name}}>Delete</button>
-            <button type="submit" name="rename" value={{table_name}}>Rename</button>
-        </form>
+        </table>
     </div>
 
+    <div class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
 
-    {% elif display_edit_fields=="YES" %}
+        {% if display_edit_buttons=="YES" %}
+
+        <div class="container my-6 mx-auto">
+            <form action="/tables/edit" method="POST">
+                <button type="submit" name="insert" value={{table_name}}>Insert</button>
+                <button type="submit" name="update" value={{table_name}}>Update</button>
+                <button type="submit" name="delete" value={{table_name}}>Delete</button>
+                <button type="submit" name="rename" value={{table_name}}>Rename</button>
+            </form>
+        </div>
+
+
+        {% elif display_edit_fields=="YES" %}
 
         {% if op=='insert' %}
-        <div class="container">
+        <div class="container flex flex-col">
             <h4>INSERT INTO</h4>
             <h4>{{table_name}}</h4>
 
             <form action="/tables/edit/insert" method="POST">
-            {%for col_name in table_col_names%}
-            <input type="text" name={{col_name}} placeholder={{col_name}}>
-            {% endfor %}
+                {%for col_name in table_col_names%}
+                <input type="text" name={{col_name}} placeholder={{col_name}}>
+                {% endfor %}
 
-            <input type="hidden" name='table_name' value={{table_name}}>
+                <input type="hidden" name='table_name' value={{table_name}}>
 
-            <button type="submit">Execute</button>
+                <button type="submit">Execute</button>
             </form>
 
         </div>
 
         {% elif op=='update' %}
-        <div class="container">
+        <div class="container flex flex-col">
             <h4>UPDATE {{table_name}}</h4>
             <h4>SET</h4>
 
             <form action="/tables/edit/update" method="POST">
-            {%for col_name in table_col_names%}
-            <input type="text" name={{col_name}} placeholder={{col_name}}>
-            {% endfor %}
+                {%for col_name in table_col_names%}
+                <input type="text" name={{col_name}} placeholder={{col_name}}>
+                {% endfor %}
 
-            <input type="text" name="condition" placeholder="condition">
+                <input type="text" name="condition" placeholder="condition">
 
-            <input type="hidden" name='table_name' value={{table_name}}>
-            <button type="submit">Execute</button>
+                <input type="hidden" name='table_name' value={{table_name}}>
+                <button type="submit">Execute</button>
             </form>
 
         </div>
 
         {% elif op=='delete' %}
-        <div class="container">
+        <div class="container flex flex-col">
             <h4>DELETE FROM {{table_name}}</h4>
             <h4>WHERE</h4>
 
             <form action="/tables/edit/delete" method="POST">
-            <input type="text" name="condition" placeholder="condition">
+                <input type="text" name="condition" placeholder="condition">
 
-            <input type="hidden" name='table_name' value={{table_name}}>
-            <button type="submit">Execute</button>
+                <input type="hidden" name='table_name' value={{table_name}}>
+                <button type="submit">Execute</button>
             </form>
 
         </div>
 
         {% elif op=='rename' %}
-        <div class="container">
+        <div class="container flex flex-col">
             <h4>RENAME TABLE</h4>
 
             <form action="/tables/edit/rename" method="POST">
-            <h4>{{table_name}}</h4>
-            <h4>TO</h4>
-            <input type="text" name='new_table_name' placeholder="New Table Name">
-            <input type="hidden" name='table_name' value={{table_name}}>
-            <button type="submit">Execute</button>
+                <h4>{{table_name}}</h4>
+                <h4>TO</h4>
+                <input type="text" name='new_table_name' placeholder="New Table Name">
+                <input type="hidden" name='table_name' value={{table_name}}>
+                <button type="submit">Execute</button>
             </form>
 
         </div>
 
 
         {% endif %}
-    
-    {% endif %}
+
+        {% endif %}
 
 
-    <form action="/tables" method="GET">
-        <button type="submit">Go to Tables List</button>
-    </form>
+        <form action="/tables" method="GET">
+            <button type="submit">Go to Tables List</button>
+        </form>
 
+    </div>
 </body>
+
 </html>

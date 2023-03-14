@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/style.css')}}">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Alumni Database</title>
 </head>
 <body>
-    <h1>Welcome to the Alumni Database Web Application!</h1>
+    <div class="text-center p-5 text-3xl font-bold">Welcome to the Alumni Database Web Application!</div>
 
-    <form action="/" method="POST">
+    <form action="/" method="POST" class="w-1/3 flex justify-between text-xl m-auto">
         <button type="submit" name="edit">Work with the Database</button>
         <button type="submit" name="team">View Team</button>
     </form>

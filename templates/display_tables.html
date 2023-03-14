@@ -4,39 +4,61 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/style.css">
-
-    <title>Alumni Database</title>
+    <!-- <link rel="stylesheet" href="../styles/style.css"> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/style.css')}}">
+    <style>
+        th{
+            padding: 10px;
+        }
+        td{
+            padding: 5px;
+        }
+    </style>
+    <title>Tables</title>
 </head>
 <body>
-    <h2>Pick from the list of tables.</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Table Number</th>
-                <th>Table Name</th>
-                
-            </tr>
-        </thead>
-
-        <tbody>
-            {% for row in table_data %}
-            <tr>
-                <td>{{row[0]}}</td>
-                <td>
-                    {{row[1]}}
-                </td>               
-            </tr>
-            {%endfor%}
-        </tbody>
-    </table>
-    <form action="/tables" method="POST">
+    <div class="text-2xl text-center">List of tables</div>
+    <div class="my-16 flex flex-wrap justify-center w-[72%] m-auto">
+        {% for i in range(0,len) %}
+        <div class="border-2 m-2 p-2 border-white rounded-lg hover:bg-[#7aa4fd] capitalize tooltip">
+            <a href="/tables?tableName={{table_names[i]}}">{{table_names[i]}}</a>
+            <div class="tooltiptext flex justify-center">
+                <table>
+                    <thead>
+                        <tr>
+                            {% for j in range(0, len_col) %}
+                            <th>{{table_col_names[j]}}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for k in schema[i] %}
+                            <tr>
+                                {% for j in range(0, len_col) %}
+                                <td>{{k[j]}}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- Field: {{schema[0]}}<br/>
+            Type:  {{schema[1]}}<br/>
+            Null: {{schema[2]}}<br/>
+            Key: {{schema[3]}}<br/>
+            Default: {{schema[4]}}<br/>
+            Extra: {{schema[5]}} -->
+        </div>
+        {%endfor%}
+    </div>
+    <!-- <form action="/tables" method="POST">
         <input type="text" name="tableName" placeholder="Table Name">
         <button type="submit" name="schema">View Schema</button>
         <button type="submit" name="entries">View Entries and Make Edits</button>
-    </form>
+    </form> -->
 
-    <form action="/" method="GET">
+    <form action="/" method="GET" class="w-full flex justify-center text-xl">
         <button type="submit">Go to Homepage</button>
     </form>
 </body>
