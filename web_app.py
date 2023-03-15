@@ -15,13 +15,6 @@ app.config['MYSQL_DB'] = db['mysql_db']
 mysql = MySQL(app)
 
 
-#add errors page
-
-# @app.errorhandler()
-# def page_not_found(e):
-#     return render_template('errors.html'), 404
-
-
 #defining home route
 @app.route('/', methods =['GET'])
 def index():
