@@ -256,7 +256,8 @@ def edit_insert():
         
         return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after,table_name=table_name,
                             table_col_names=TABLE_COLUMN_NAMES)
-    except:
+    except Exception as e:
+        print(e)
         return render_template('errors.html', errorMessage="Input Error- Re-check your input against the schema.")
 
 
