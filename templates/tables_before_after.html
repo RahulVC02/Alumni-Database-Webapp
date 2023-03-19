@@ -19,7 +19,7 @@
         <div class="capitalize text-center text-3xl mb-6">{{old_table_name}}</div>
         {% else %}
         {% endif %}
-        <table border="1">
+        <table class="mx-auto">
             <thead>
                 <tr>
                     {%for col_name in table_col_names%}
@@ -48,7 +48,7 @@
         <div class="capitalize text-center text-3xl mb-6">{{new_table_name}}</div>
         {% else %}
         {% endif %}
-        <table border="1">
+        <table class="mx-auto">
             <thead>
                 <tr>
                     {%for col_name in table_col_names%}
@@ -70,8 +70,14 @@
         </table>
 
         <br>
-        <form action="/tables" method="GET">
-            <button type="submit">Go to Tables List</button>
+
+
+    </div>
+
+    <div
+        class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
+        <form action="/tables" method="GET" class="flex">
+            <button type="submit" class="mx-auto">Go to Tables List</button>
         </form>
         <br>
         <button>
