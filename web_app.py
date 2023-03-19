@@ -23,15 +23,6 @@ class User():
     password: str
     role: str = None
 
-#add errors page
-
-# @app.errorhandler()
-# def page_not_found(e):
-#     return render_template('errors.html'), 404
-
-
-
-
 #defining home route
 @app.route('/', methods =['GET'])
 def index():

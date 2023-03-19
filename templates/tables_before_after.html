@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/style.css">
-    <title>Alumni Database</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/style.css')}}">
+    <link rel="icon" href="../static/education.png">
+    <title>Results</title>
 </head>
-<body>
-    <h2>{{table_name}}</h2>
-    
-    <div class="container">
 
-        <div>
-        <h3>Before</h3>
+<body class="p-0 m-0 flex bg-[var(--color1)]">
+    <div
+        class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
+        <div class="capitalize text-center text-3xl mb-6">Before</div>
         {% if old_table_name %}
-        <h3>{{old_table_name}}</h3>
+        <div class="capitalize text-center text-3xl mb-6">{{old_table_name}}</div>
         {% else %}
         {% endif %}
         <table border="1">
@@ -30,7 +31,7 @@
 
             {% for row in table_before %}
             <tr>
-                
+
                 {% for data in row%}
                 <td>{{data}}</td>
                 {% endfor %}
@@ -38,13 +39,13 @@
             {% endfor %}
 
         </table>
-        </div>
+    </div>
 
-
-        <div>
-        <h3>After</h3>
+    <div
+        class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
+        <div class="capitalize text-center text-3xl mb-6">After</div>
         {% if new_table_name %}
-        <h3>{{new_table_name}}</h3>
+        <div class="capitalize text-center text-3xl mb-6">{{new_table_name}}</div>
         {% else %}
         {% endif %}
         <table border="1">
@@ -57,28 +58,28 @@
             </thead>
 
 
-            {% for j in table_after %}
+            {% for row in table_after %}
             <tr>
-                
-                {% for data in j%}
+
+                {% for data in row%}
                 <td>{{data}}</td>
                 {% endfor %}
             </tr>
             {% endfor %}
 
         </table>
-        </div>
-        
+
+        <br>
+        <form action="/tables" method="GET">
+            <button type="submit">Go to Tables List</button>
+        </form>
+        <br>
+        <form action="/tables/entries/{{table_name}}" method="POST">
+            <button type="submit">Go Back to {{table_name}} table</button>
+        </form>
+
     </div>
 
-
-    <form action="/tables" method="GET">
-        <button type="submit">Go to Tables List</button>
-    </form>
-
-    <form action="/tables/entries/{{table_name}}" method="POST">
-        <button type="submit">Go Back to {{table_name}} table</button>
-    </form>
-    
 </body>
+
 </html>
