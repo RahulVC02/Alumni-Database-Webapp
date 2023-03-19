@@ -3,7 +3,7 @@
 /* Write css color global variables for 5 colors  */
 :root{
     --color1: #140f07;
-    --color2: #0e1d4a;
+    --color2: linear-gradient(47deg, rgba(4,0,66,1) 0%, rgba(9,9,121,1) 30%, rgba(0,212,255,1) 100%);
     --color3: #20469f;
     --color4: #4471fd;
     --color5: #7aa4fd;
@@ -39,9 +39,10 @@ background: #555;
 
 body{
     padding: 15px;
-    background-color: var(--color2);
+    background: var(--color2);
     color: white;
     font-family: 'Sono', sans-serif;
+    height: 100vh;
 }
 
 button{
