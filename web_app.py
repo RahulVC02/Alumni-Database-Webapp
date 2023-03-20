@@ -4,6 +4,7 @@ from flask_session import Session
 import pymysql
 from flaskext.mysql import MySQL
 import yaml
+from base64 import b64encode
 from dataclasses import dataclass
 
 app = Flask(__name__)
@@ -129,6 +130,11 @@ def tables():
             mysql.get_db().commit()
             table_data = cur.fetchall()
             cur.close()
+
+            # if table_name == "alumni":
+            #     img = bytes.fromhex(table_data[0][4].decode('ascii'))
+            #     print(img)
+                # img = b64encode(table_data[0][4]).decode('utf-8')
 
             cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
             cursor.execute(
@@ -272,7 +278,7 @@ def edit_insert():
                                table_col_names=TABLE_COLUMN_NAMES)
     except Exception as e:
         print(e)
-        return render_template('errors.html', errorMessage="Input Error- Re-check your input against the schema.")
+        return render_template('errors.html', errorMessage="Input Error- Re-check your input against the schema.", errorDetails=e.args[1])
 
 
 # update page render logic

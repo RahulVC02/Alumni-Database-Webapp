@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{url_for('static', filename='styles/style.css')}}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <link rel="icon" href="../static/education.png">
+    <link rel="icon" href="../static/group.png">
     <title>Results</title>
 </head>
 
@@ -25,7 +25,7 @@
     </nav>
 
     <div
-        class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
+        class="w-1/3 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
         <div class="capitalize text-center text-3xl mb-6">Before</div>
         {% if old_table_name %}
         <div class="capitalize text-center text-3xl mb-6">{{old_table_name}}</div>
@@ -54,7 +54,7 @@
     </div>
 
     <div
-        class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
+        class="w-1/3 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
         <div class="capitalize text-center text-3xl mb-6">After</div>
         {% if new_table_name %}
         <div class="capitalize text-center text-3xl mb-6">{{new_table_name}}</div>
@@ -86,17 +86,15 @@
 
     </div>
 
-    <div
-        class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
-        <form action="/tables" method="GET" class="flex">
-            <button type="submit" class="mx-auto">Go to Tables List</button>
-        </form>
+    <div class="w-1/3 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)] flex flex-col justify-center">
+        <button type="submit" class="mx-auto my-5">
+            <a href="/tables">Go to Tables List</a>
+        </button>
         <br>
 
-        <form action="/tables?tableName={{table_name}}" method="GET" class="flex">
-            <button type="submit" class="mx-auto">Go Back to {{table_name}} table</button>
-        </form>
-
+        <button type="submit" class="mx-auto">
+            <a href="/tables?tableName={{table_name}}">Go Back to {{table_name}} table</a>
+        </button>
     </div>
 
 </body>

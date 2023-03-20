@@ -50,7 +50,7 @@ button{
     color: white;
     /* border: 1px solid rgb(255, 255, 255); */
     border-radius: 20px;
-    margin-right: 20px !important;
+    /* margin-right: 20px; */
     padding: 10px 15px !important;
     font-family: 'Sono', sans-serif;
 }
