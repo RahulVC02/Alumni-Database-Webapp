@@ -1,5 +1,28 @@
 use alumni;
 
+GRANT select ON alumni TO employee;
+GRANT select ON department TO employee;
+GRANT select ON courses TO employee;
+GRANT select ON achievements TO employee;
+GRANT select ON alumimages TO employee;
+GRANT select ON belongsto TO employee;
+GRANT select ON companies TO employee;
+GRANT select ON dual_major TO employee;
+GRANT select ON education TO employee;
+GRANT select ON extra_curricular TO employee;
+GRANT select ON fa TO employee;
+GRANT select ON images TO employee;
+GRANT select ON job_posting TO employee;
+GRANT select ON minor TO employee;
+GRANT select ON participates TO employee;
+GRANT select ON project_guide TO employee;
+GRANT select ON projects TO employee;
+GRANT select ON role_in TO employee;
+GRANT select ON studied_in TO employee;
+GRANT select ON takes TO employee;
+GRANT select ON teaches TO employee;
+GRANT select ON works_in TO employee;
+
 GRANT insert ON alumni TO employee;
 GRANT insert ON department TO employee;
 GRANT insert ON courses TO employee;
