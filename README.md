@@ -15,6 +15,7 @@ Made with Flask and MySQL
     pip install flask-mysql
     pip install flask-session
     pip install pymysql
+    pip install cryptography
     ```
 
     Run the above commands in the terminal in order to install the required packages.
