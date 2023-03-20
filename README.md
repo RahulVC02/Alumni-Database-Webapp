@@ -127,7 +127,7 @@ This will open the home page of the webapp.
 2. Employee
  ![Employee tables](/Photos_Readme/employee_tables.png)
 4. Student
- ![Student tables](/Photos_Readme/Student_tables.png)
+ ![Student tables](/Photos_Readme/Students_tables.png)
 ### Operations
 1. Insert
     Before ![Insert Before](/Photos_Readme/Insert_1.png)
