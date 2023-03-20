@@ -166,12 +166,19 @@ This will open the home page of the webapp.
 ![image](https://user-images.githubusercontent.com/76472249/226409501-394f0788-fe46-4bd1-8820-ce1af6c9763b.png)
 ![image](https://user-images.githubusercontent.com/76472249/226409545-3c4f46c9-8e50-48c8-9b19-abcb5039f26f.png)
 
+#### Only specific actions can be performed when logged in as different users based on the privileges granted to that user.
+
+1) Only Insert and Delete actions can be performed by an employee.
+![Employee Actions](/Photos_Readme/employee_table_views.png)
+
+1) A student is only allowed to view the tables available to it and not make any changes.
+![Student Actions](/Photos_Readme/student_table_views.png)
+
 ## Work Distribution
 
 Rahul Chembakasseril
 1) Worked on developing the backend using Flask, MySQLdb from scratch. Set up the backend integration pipeline and query processing functionality through the multiple backend routes.
 2) Developed basic wireframe for the frontend (proof of concept) and integrated those pages with the backend.
-
 
 Kanishk Singhal
 1) Worked with flask and html to add routes to various webpage.
@@ -179,14 +186,12 @@ Kanishk Singhal
 3) Setup connection to different databases in the webapp using appropriate libraries so that different roles can access database from their account(admin, students and employees).
 4)  Used tailwindCSS to modify the frontend of the project.
 
-
 Inderjeet Singh Bhullar
 1) Worked on developing the web application using Flask and Integrating our database  in the web app using MySQL.
 2) Worked on developing the final rendered HTML pages for the web application.
 3) Contributed to the Front-end development of these HTML pages using CSS, Bootstrap and Tailwind in order to make it look user-friendly. 
 4) Worked on creating the Navigation bar for the web application that makes it easier for the users to navigate.
 5) Helped in developing the ‘student’ and ‘employee’ roles for our database and granting them the desired permissions and privileges along with contributing to the Readme file.
-
 
 Kalash Kankaria
 1) Contributed to the Front-end with styling and also with the addition of a navigation bar in our web app.
