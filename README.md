@@ -125,6 +125,8 @@ This will open the home page of the webapp.
     Before ![Update Before](/Photos_Readme/Update_1.png)
     After ![Update After](/Photos_Readme/Update_2.png)
 3. Delete
+    Before ![Delete Before](/Photos_Readme/d1.png)
+    After ![Delete After](/Photos_Readme/d2.png)
 4. Rename
     Before ![Rename Before](/Photos_Readme/Rename_1.png)
     After ![Rename After](/Photos_Readme/Rename_2.png)
