@@ -206,8 +206,9 @@ Joy Makwana
 
 Medhansh Singh
 1) Developed Front-end using HTML, CSS and Tailwind CSS.
-2) Tested the webapp to check if it supports dynamic operations.
-3) Documented the testing output in the ReadMe.MD file.
+2) Setup the required connections to fully test our database and the webapp.
+3) Tested the webapp to check if it supports dynamic operations.
+4) Documented the testing output with snapshots in the ReadMe.MD file.
 
 Nokzendi Aier
 1) Worked on the front-end with HTML, CSS and Tailwind CSS.
