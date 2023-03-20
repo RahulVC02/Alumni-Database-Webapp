@@ -142,7 +142,7 @@ This will open the home page of the webapp.
     Before ![Rename Before](/Photos_Readme/Rename_1.png)
     After ![Rename After](/Photos_Readme/Rename_2.png)
 5. Where
-
+    Where is being implemeted in the above examples.
 ## Work Distribution
 
 Rahul Chembakasseril
