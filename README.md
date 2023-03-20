@@ -130,19 +130,20 @@ This will open the home page of the webapp.
  ![Student tables](/Photos_Readme/Students_tables.png)
 ### Operations
 1. Insert
-    Before ![Insert Before](/Photos_Readme/Insert_1.png)
-    After ![Insert After](/Photos_Readme/Insert_2.png)
+    * Before ![Insert Before](/Photos_Readme/Insert_1.png)
+    * After ![Insert After](/Photos_Readme/Insert_2.png)
 2. Update
-    Before ![Update Before](/Photos_Readme/Update_1.png)
-    After ![Update After](/Photos_Readme/Update_2.png)
+    * Before ![Update Before](/Photos_Readme/Update_1.png)
+    * After ![Update After](/Photos_Readme/Update_2.png)
 3. Delete
-    Before ![Delete Before](/Photos_Readme/d1.png)
-    After ![Delete After](/Photos_Readme/d2.png)
+    * Before ![Delete Before](/Photos_Readme/d1.png)
+    * After ![Delete After](/Photos_Readme/d2.png)
 4. Rename
-    Before ![Rename Before](/Photos_Readme/Rename_1.png)
-    After ![Rename After](/Photos_Readme/Rename_2.png)
+    * Before ![Rename Before](/Photos_Readme/Rename_1.png)
+    * After ![Rename After](/Photos_Readme/Rename_2.png)
 5. Where
-    Where is being implemeted in the above examples.
+    * Where is being implemeted in the above examples.
+
 ## Work Distribution
 
 Rahul Chembakasseril
