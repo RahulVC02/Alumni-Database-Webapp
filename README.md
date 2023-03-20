@@ -119,11 +119,13 @@ This will open the home page of the webapp.
 ## Snapshots of Dynamic Operations
 
 1. Insert
-    Before ![Rename Before](/Photos_Readme/Rename_1.png)
-    After ![Rename After](/Photos_Readme/Rename_2.png)
-3. Update
+    Before ![Insert Before](/Photos_Readme/Insert_1.png)
+    After ![Insert After](/Photos_Readme/Insert_2.png)
+2. Update
     Before ![Update Before](/Photos_Readme/Update_1.png)
     After ![Update After](/Photos_Readme/Update_2.png)
-4. Delete
-5. Rename
-6. Where
+3. Delete
+4. Rename
+    Before ![Rename Before](/Photos_Readme/Rename_1.png)
+    After ![Rename After](/Photos_Readme/Rename_2.png)
+5. Where
