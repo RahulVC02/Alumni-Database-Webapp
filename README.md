@@ -119,8 +119,16 @@ Now that we have setup the database and the credentails, we can run the webapp.
     
 This will open the home page of the webapp.
 
-## Snapshots of Dynamic Operations (G1 and G2)
-
+### Welcome Screen
+ ![Welcome Screen](/Photos_Readme/Welcome.png)
+### Tables
+1. Admin
+ ![Admin tables](/Photos_Readme/admin_tables.png)
+2. Employee
+ ![Employee tables](/Photos_Readme/employee_tables.png)
+4. Student
+ ![Student tables](/Photos_Readme/Student_tables.png)
+### Operations
 1. Insert
     Before ![Insert Before](/Photos_Readme/Insert_1.png)
     After ![Insert After](/Photos_Readme/Insert_2.png)
@@ -134,7 +142,6 @@ This will open the home page of the webapp.
     Before ![Rename Before](/Photos_Readme/Rename_1.png)
     After ![Rename After](/Photos_Readme/Rename_2.png)
 5. Where
-    Where clause is included in the above screenshots, where you provide the condition.
 
 ## Work Distribution
 
