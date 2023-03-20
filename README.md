@@ -185,7 +185,7 @@ Inderjeet Singh Bhullar
 2) Worked on developing the final rendered HTML pages for the web application.
 3) Contributed to the Front-end development of these HTML pages using CSS, Bootstrap and Tailwind in order to make it look user-friendly. 
 4) Worked on creating the Navigation bar for the web application that makes it easier for the users to navigate.
-5) Helped in developing the ‘student’ and ‘employee’ roles for our database and granting them the desired permissions and privileges.
+5) Helped in developing the ‘student’ and ‘employee’ roles for our database and granting them the desired permissions and privileges along with contributing to the Readme file.
 
 
 Kalash Kankaria
