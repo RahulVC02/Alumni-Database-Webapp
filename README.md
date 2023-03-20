@@ -1,8 +1,11 @@
 # DBMS Assignment 3 - Alumni Database Webapp
 
-Made with Flask and MySQL
+## Made with Flask and MySQL
 
-## Setup
+G1 already populated the database with dummy/imaginary values into it in the Assignment 2 submission. The dump file was also submitted in the Assignment 2.
+
+
+## Setup (G1 and G2)
 
 1. Install Python 3.6.5 or above
 
@@ -116,7 +119,7 @@ Now that we have setup the database and the credentails, we can run the webapp.
     
 This will open the home page of the webapp.
 
-## Snapshots of Dynamic Operations
+## Snapshots of Dynamic Operations (G1 and G2)
 
 1. Insert
     Before ![Insert Before](/Photos_Readme/Insert_1.png)
@@ -131,3 +134,47 @@ This will open the home page of the webapp.
     Before ![Rename Before](/Photos_Readme/Rename_1.png)
     After ![Rename After](/Photos_Readme/Rename_2.png)
 5. Where
+    Where clause is included in the above screenshots, where you provide the condition.
+
+## Work Distribution
+
+Rahul Chembakasseril
+1) Worked on the backend implementation of routes and integration of Flask with MySQL.
+2) Helped setup basic frontend wireframe to provide proof of concept.
+
+Kanishk Singhal
+1) 
+2) 
+
+Inderjeet Singh Bhullar
+1) 
+2)
+
+Kalash Kankaria
+1)
+2)
+
+Joy Makwana
+1) 
+2)
+
+Medhansh Singh
+1) Developed Front-end using HTML, CSS and Tailwind CSS.
+2) Tested the webapp to check if it supports dynamic operations.
+3) Documented the testing output in the ReadMe.MD file.
+
+Nokzendi Aier
+1)
+2)
+
+Bhavesh Jain
+1)
+2)
+
+Harshvardhan Vala
+1)
+2)
+
+Dhairya Shah
+1) Worked on the frontend of the WebApp using tailwind. 
+2) Testing views, clicked screenshots of successful executions, and documented them in readme.
