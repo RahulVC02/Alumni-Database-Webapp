@@ -194,6 +194,10 @@ Kalash Kankaria
 3) Created various views and granted their privileges based on logical reasoning that should be provided to a student as a role/ user
 4) Helped with the development of the backend of our Web app and integrating our MySQL database.
 
+Bhavesh Jain
+1) Worked on flask integration with MySQL.
+2) Worked on designing backend routes.
+3) Worked on combined work of G1&G2.
 
 Joy Makwana
 1) Worked on the Front-end using HTML, CSS and Tailwind.
@@ -212,11 +216,6 @@ Nokzendi Aier
 4) Helped in debugging errors found during testing.
 5) Documented the testing output and snapshots.
 6) Contributed documentation to the ReadMe.MD file.
-
-Bhavesh Jain
-1) Worked on flask integration with MySQL.
-2) Worked on designing backend routes.
-3) Worked on combined work of G1&G2.
 
 Harshvardhan Vala
 1) Worked on the front-end with tailwindCSS and HTML.
