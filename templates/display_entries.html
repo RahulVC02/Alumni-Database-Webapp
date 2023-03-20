@@ -52,7 +52,7 @@
     <div
         class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
 
-        {% if display_edit_buttons=="YES" %}
+        {% if display_edit_buttons=="ADMIN" %}
 
         <div class="container my-6 mx-auto">
             <form action="/tables/edit" method="POST">
@@ -63,6 +63,13 @@
             </form>
         </div>
 
+        {% elif display_edit_buttons=="EMP" %}
+        <div class="container my-6 mx-auto">
+            <form action="/tables/edit" method="POST">
+                <button type="submit" name="insert" value={{table_name}}>Insert</button>
+                <button type="submit" name="delete" value={{table_name}}>Delete</button>
+            </form>
+        </div>
 
         {% elif display_edit_fields=="YES" %}
 

@@ -1,4 +1,3 @@
-drop database users;
 create database users;
 use users;
 

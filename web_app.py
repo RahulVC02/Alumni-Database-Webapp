@@ -142,8 +142,18 @@ def tables():
 
             cursor.close()
 
-            return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                   display_edit_buttons="YES", display_edit_fields="NO")
+            if mysql == mysql1:
+                return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+                                       display_edit_buttons="ADMIN", display_edit_fields="NO")
+            elif mysql == mysql2:
+                return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+                                       display_edit_buttons="STUDENT", display_edit_fields="NO")
+            elif mysql == mysql3:
+                return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+                                       display_edit_buttons="EMP", display_edit_fields="NO")
+
+            # return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+            #                        display_edit_buttons="ADMIN", display_edit_fields="NO")
 
         except Exception as e:
 
