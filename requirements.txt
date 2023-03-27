@@ -3,3 +3,4 @@ flask-mysql
 flask-session
 pymysql
 cryptography
+gunicorn==19.7.1
