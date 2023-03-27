@@ -1,27 +1,31 @@
 from flask import Flask, render_template, request, redirect, session, flash
 from flask_session import Session
-# from flask_mysqldb import MySQL
 import pymysql
 from flaskext.mysql import MySQL
-import yaml
-from base64 import b64encode
 from dataclasses import dataclass
+import os
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
-db = yaml.load(open('credentials.yaml'), Loader=yaml.FullLoader)
+
+mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
+mysql_user1 = os.environ.get('MYSQL_USER1', 'root')
+mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'mySQLs3rv3r!')
+mysql_user2 = os.environ.get('MYSQL_USER2', 'student')
+mysql_password2 = os.environ.get('MYSQL_PASSWORD2', 'Pass@1234')
+mysql_user3 = os.environ.get('MYSQL_USER3', 'employee')
+mysql_password3 = os.environ.get('MYSQL_PASSWORD3', 'Pass@5678')
+login_db = os.environ.get('LOGIN_DB', 'users')
+mysql_db = os.environ.get('MYSQL_DB', 'alumni')
+
 mysql = None
 
-userdb = MySQL(app, prefix="userdb", host=db['mysql_host'],
-               user=db['mysql_user1'], password=db['mysql_password1'], db=db['login_db'])
-mysql1 = MySQL(app, prefix="mysql1", host=db['mysql_host'],
-               user=db['mysql_user1'], password=db['mysql_password1'], db=db['mysql_db'])
-mysql2 = MySQL(app, prefix="mysql2", host=db['mysql_host'],
-               user=db['mysql_user2'], password=db['mysql_password2'], db=db['mysql_db'])
-mysql3 = MySQL(app, prefix="mysql3", host=db['mysql_host'],
-               user=db['mysql_user3'], password=db['mysql_password3'], db=db['mysql_db'])
+userdb = MySQL(app, prefix="userdb", host=mysql_host, user=mysql_user1, password=mysql_password1, db=login_db)
+mysql1 = MySQL(app, prefix="mysql1", host=mysql_host, user=mysql_user1, password=mysql_password1, db=mysql_db)
+mysql2 = MySQL(app, prefix="mysql2", host=mysql_host, user=mysql_user2, password=mysql_password2, db=mysql_db)
+mysql3 = MySQL(app, prefix="mysql3", host=mysql_host, user=mysql_user3, password=mysql_password3, db=mysql_db)
 
 
 @dataclass
@@ -96,7 +100,7 @@ def team():
 # rendering the list of tables in the database
 @app.route('/tables', methods=['GET'])
 def tables():
-    if session["logged_in"] == False:
+    if session.get('logged_in', False) == False:
         return redirect('/')
     args = request.args
     table_name = args.get('tableName', default=None, type=str)
