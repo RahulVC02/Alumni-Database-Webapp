@@ -509,7 +509,7 @@ def edit_search():
         # print(OP)
         # print(type(OP))
         return render_template('tables_before_after.html', table_before = OP, table_after=None, table_name=table_name,
-                               table_col_names=TABLE_COLUMN_NAMES, search_msg=f'The results for "{search_key}" are:', second_table="NO")
+                               table_col_names=TABLE_COLUMN_NAMES, search_msg=f'The results for "{search_key}" are:', second_table="NO", search_key=search_key)
     except:
         return render_template('errors.html', errorMessage="Search Error- Re-check your search key against the schema and current database entries.", table_name=table_name)
 
@@ -564,6 +564,59 @@ def service_download(table_name):
 
     
 
+
+
+@app.route('/tables/edit/search/download', methods=['GET', 'POST'])
+def service_search_download():
+    if session["logged_in"] == False:
+        return redirect('/')
+    
+    x = request.form
+    table_name = x['table_name']
+    search_key = x['search_key']
+    
+
+    #get column names
+    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    cursor.execute(
+        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    table_column_names_tuples = cursor.fetchall()
+    TABLE_COLUMN_NAMES = []
+
+    for dict in table_column_names_tuples:
+        y = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(y)
+
+    # making query
+    # query = "DELETE FROM "+table_name+" WHERE " + condition
+    cols = ", ".join(TABLE_COLUMN_NAMES)
+
+    query = "SELECT * FROM "+table_name+" WHERE CONCAT(" +cols+ ") LIKE "+ "'%" + search_key + "%'"
+    
+    cur = mysql.get_db().cursor()
+    cur.execute(query)
+    mysql.get_db().commit()
+
+    data = cur.fetchall()
+
+    # Create a CSV file and write the data to it
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(TABLE_COLUMN_NAMES)  # Replace with your column names
+    for row in data:
+        writer.writerow(row)
+
+    
+    file_name = table_name+'/'+search_key
+
+    # Return the CSV file as a response with appropriate headers
+    response = Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': f'attachment;filename={file_name}.csv'}
+    )
+
+    return response
     
 
 

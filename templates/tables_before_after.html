@@ -118,6 +118,15 @@
         <button type="submit" class="mx-auto">
             <a href="/tables?tableName={{table_name}}">Go Back to {{table_name}} table</a>
         </button>
+        
+        {% if search_msg %}
+        <form action="/tables/edit/search/download" method="POST" class="mx-auto my-5">
+            <button type="submit" class="mx-auto my-5">Download Search Results</button>
+            <input type="hidden" name='table_name' value={{table_name}}>
+            <input type="hidden" name='search_key' value={{search_key}}>
+        </form>
+        {% else %}
+        {% endif %}
     </div>
 
 </body>
