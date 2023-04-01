@@ -60,6 +60,9 @@
                 <button type="submit" name="update" value={{table_name}}>Update</button>
                 <button type="submit" name="delete" value={{table_name}}>Delete</button>
                 <button type="submit" name="rename" value={{table_name}}>Rename</button>
+                <button type="submit" name="search" value={{table_name}}>Search</button>
+                <button type="submit" name="download" value={{table_name}}>Download Table</button>
+                <button type="submit" name="upload" value="{{table_name}}">Upload Entries as File</button>
             </form>
         </div>
 
@@ -68,6 +71,9 @@
             <form action="/tables/edit" method="POST">
                 <button type="submit" name="insert" value={{table_name}}>Insert</button>
                 <button type="submit" name="delete" value={{table_name}}>Delete</button>
+                <button type="submit" name="search" value={{table_name}}>Search</button>
+                <button type="submit" name="download" value={{table_name}}>Download Table</button>
+                <button type="submit" name="upload" value="{{table_name}}">Upload Entries as CSV</button>
             </form>
         </div>
 
@@ -159,6 +165,30 @@
             <br>
         </div>
 
+        {% elif op=='search' %}
+        <div class="container flex flex-col">
+            <h4>Search the Table</h4>
+            <form action="/tables/edit/search" method="POST">
+                <input type="text" name='search_key'
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Type here.">
+                <input type="hidden" name='table_name' value={{table_name}}>
+                <br>
+                <button type="submit">Get Search Results</button>
+            </form>
+            <br>
+        </div>
+
+        {% elif op=='upload' %}
+        <div class="container flex flex-col">
+            <form  action='/tables/edit/upload/{{table_name}}' method="POST" enctype="multipart/form-data">
+                <label for="file">Pick file:</label>
+                <input type="file" name="file"><br>
+                <button type="submit">Upload</button>
+            </form>
+            <br>
+        </div>
+
 
         {% endif %}
 
@@ -167,6 +197,12 @@
         <form action="/tables" method="GET">
             <button type="submit">Go to Tables List</button>
         </form>
+
+        <!-- {% if is_search_op=="YES" %}
+        <button type="submit" class="mx-auto">
+            <a href="/tables?tableName={{table_name}}">Go Back to {{table_name}} table</a>
+        </button>
+        {% endif %} -->
 
     </div>
 </body>

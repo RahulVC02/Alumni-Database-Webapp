@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, redirect, session, flash
+from flask import Flask, render_template, request, redirect, session, flash, Response
 from flask_session import Session
 # from flask_mysqldb import MySQL
+import io
+import csv
 import pymysql
 from flaskext.mysql import MySQL
 import yaml
@@ -43,6 +45,7 @@ def index():
 @app.route('/', methods=['POST'])
 def login():
     session["user"] = User(request.form['name'], request.form['password'])
+    print(session["user"])
     cursor = userdb.get_db().cursor()
     cursor.execute(
         "SELECT password, role FROM login_details WHERE name=%s", (session["user"].name,))
@@ -107,7 +110,7 @@ def tables():
         tables = cursor.fetchall()
         cursor.close()
         table_names = []
-        print(tables)
+        # print(tables)
         for i in range(len(tables)):
             table_names.append(tables[i][0])
 
@@ -150,13 +153,13 @@ def tables():
 
             if mysql == mysql1:
                 return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="ADMIN", display_edit_fields="NO")
+                                       display_edit_buttons="ADMIN", display_edit_fields="NO", is_search_op="NO")
             elif mysql == mysql2:
                 return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="STUDENT", display_edit_fields="NO")
+                                       display_edit_buttons="STUDENT", display_edit_fields="NO", is_search_op="NO")
             elif mysql == mysql3:
                 return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="EMP", display_edit_fields="NO")
+                                       display_edit_buttons="EMP", display_edit_fields="NO", is_search_op="NO")
 
             # return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
             #                        display_edit_buttons="ADMIN", display_edit_fields="NO")
@@ -181,7 +184,16 @@ def tables_edit():
     if(x.get('insert') == None):
         if(x.get('update') == None):
             if(x.get('delete') == None):
-                pressed = 'rename'
+                if(x.get('rename') == None):
+                    if(x.get('search')==None):
+                        if(x.get('upload')==None):
+                            pressed = 'download'
+                        else:
+                            pressed = 'upload'
+                    else:
+                        pressed = 'search'
+                else:
+                    pressed = 'rename'
             else:
                 pressed = 'delete'
         else:
@@ -191,7 +203,7 @@ def tables_edit():
 
     # finding column names
     table_name = x[pressed]
-    print(mysql.get_db().cursor())
+    # print(mysql.get_db().cursor())
     cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
     cursor.execute(
         "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
@@ -211,16 +223,24 @@ def tables_edit():
     # updating rendered output based on the button pressed
     if(pressed == 'insert'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Insert",
-                               display_edit_buttons="NO", display_edit_fields="YES", op='insert')
+                               display_edit_buttons="NO", display_edit_fields="YES", op='insert', is_search_op="NO")
     elif(pressed == 'update'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Update",
-                               display_edit_buttons="NO", display_edit_fields="YES", op='update')
+                               display_edit_buttons="NO", display_edit_fields="YES", op='update', is_search_op="NO")
     elif(pressed == 'delete'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Delete",
-                               display_edit_buttons="NO", display_edit_fields="YES", op='delete')
+                               display_edit_buttons="NO", display_edit_fields="YES", op='delete', is_search_op="NO")
     elif(pressed == 'rename'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Rename",
-                               display_edit_buttons="NO", display_edit_fields="YES", op='rename')
+                               display_edit_buttons="NO", display_edit_fields="YES", op='rename', is_search_op="NO")
+    elif(pressed == 'search'):
+        return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Search",
+                               display_edit_buttons="NO", display_edit_fields="YES", op='search', is_search_op="YES")
+    elif(pressed == 'upload'):
+        return render_template('display_entries.html', userDetails = table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Upload File",
+                               display_edit_buttons="NO", display_edit_fields="YES", op='upload', is_search_op="NO")
+    elif(pressed == 'download'):
+        return redirect(f'/tables/download/{table_name}')
     else:
         return render_template('errors.html')
 
@@ -232,7 +252,7 @@ def edit_insert():
     if session["logged_in"] == False:
         return redirect('/')
     x = request.form
-    print(x)
+    # print(x)
     table_name = x['table_name']
 
     # Table Before Insertion
@@ -274,10 +294,13 @@ def edit_insert():
         mysql.get_db().commit()
         table_data_after = cur.fetchall()
 
+        print(table_data_after)
+        print(type(table_data_after))
+
         return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after, table_name=table_name,
-                               table_col_names=TABLE_COLUMN_NAMES)
+                               table_col_names=TABLE_COLUMN_NAMES, second_table="YES")
     except Exception as e:
-        print(e)
+        # print(e)
         return render_template('errors.html', errorMessage="Input Error- Re-check your input against the schema.", errorDetails=e.args[1])
 
 
@@ -345,7 +368,7 @@ def edit_update():
         table_data_after = cur.fetchall()
 
         return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after, table_name=table_name,
-                               table_col_names=TABLE_COLUMN_NAMES)
+                               table_col_names=TABLE_COLUMN_NAMES, second_table="YES")
     except:
         return render_template('errors.html', errorMessage="Update Error- Re-check your update value types/condition against the schema and current database entries.")
 
@@ -392,7 +415,7 @@ def edit_delete():
         table_data_after = cur.fetchall()
 
         return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after, table_name=table_name,
-                               table_col_names=TABLE_COLUMN_NAMES)
+                               table_col_names=TABLE_COLUMN_NAMES, second_table="YES")
     except:
         return render_template('errors.html', errorMessage="Delete Error- Re-check your delete condition against the schema and current database entries.")
 
@@ -438,9 +461,179 @@ def edit_rename():
         table_data_after = cur.fetchall()
 
         return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after, table_name=new_table_name,
-                               table_col_names=TABLE_COLUMN_NAMES, old_table_name=old_table_name, new_table_name=new_table_name)
+                               table_col_names=TABLE_COLUMN_NAMES, old_table_name=old_table_name, new_table_name=new_table_name, second_table="YES")
     except:
         return render_template('errors.html', errorMessage="Rename Error- Re-check your input for New Table Name")
+
+
+
+
+#search table using keyword logic
+
+@app.route('/tables/edit/search', methods=['POST'])
+def edit_search():
+    if session["logged_in"] == False:
+        return redirect('/')
+    x = request.form
+    table_name = x['table_name']
+    search_key = x['search_key']
+
+    OP=-1
+
+    # getting column names
+    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    cursor.execute(
+        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    table_column_names_tuples = cursor.fetchall()
+    TABLE_COLUMN_NAMES = []
+
+    for dict in table_column_names_tuples:
+        y = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(y)
+
+    # making query
+    # query = "DELETE FROM "+table_name+" WHERE " + condition
+    cols = ", ".join(TABLE_COLUMN_NAMES)
+
+    query = "SELECT * FROM "+table_name+" WHERE CONCAT(" +cols+ ") LIKE "+ "'%" + search_key + "%'"
+    # print(query)
+
+    try:
+        cur = mysql.get_db().cursor()
+        cur.execute(query)
+        mysql.get_db().commit()
+
+        OP = cur.fetchall()
+        # OP = [list(tup) for tup in OUTPUT]
+
+        # print(OP)
+        # print(type(OP))
+        return render_template('tables_before_after.html', table_before = OP, table_after=None, table_name=table_name,
+                               table_col_names=TABLE_COLUMN_NAMES, search_msg=f'The results for "{search_key}" are:', second_table="NO")
+    except:
+        return render_template('errors.html', errorMessage="Search Error- Re-check your search key against the schema and current database entries.", table_name=table_name)
+
+
+
+
+@app.route('/tables/download/<table_name>', methods=['GET'])
+def service_download(table_name):
+    if session["logged_in"] == False:
+        return redirect('/')
+    
+    table_name = table_name
+
+    # getting column names
+    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    cursor.execute(
+        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    table_column_names_tuples = cursor.fetchall()
+    TABLE_COLUMN_NAMES = []
+
+
+    for dict in table_column_names_tuples:
+        y = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(y)
+
+
+
+    # Table Data
+    cur = mysql.get_db().cursor()
+    cur.execute(f"SELECT * FROM {table_name}")
+    mysql.get_db().commit()
+    data = cur.fetchall()
+
+
+
+    # Create a CSV file and write the data to it
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(TABLE_COLUMN_NAMES)  # Replace with your column names
+    for row in data:
+        writer.writerow(row)
+
+
+    # Return the CSV file as a response with appropriate headers
+    response = Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': f'attachment;filename={table_name}.csv'}
+    )
+
+    return response
+
+    
+
+    
+
+
+
+@app.route('/tables/edit/upload/<table_name>', methods=['POST'])
+def upload_file(table_name):
+    uploaded_file = request.files['file']
+    # Create a file object from the uploaded file data
+    file_stream = io.StringIO(uploaded_file.stream.read().decode("UTF8"), newline=None)
+    # Parse the CSV data into a list of rows
+    csv_data = csv.reader(file_stream)
+
+    #skip the first row
+    next(csv_data)
+
+    #Table before Upload
+    # Table Before Insertion
+    cur = mysql.get_db().cursor()
+    cur.execute(f"SELECT * FROM {table_name}")
+    mysql.get_db().commit()
+    table_data_before = cur.fetchall()
+
+
+    # getting column names
+    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    cursor.execute(
+        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    table_column_names_tuples = cursor.fetchall()
+    TABLE_COLUMN_NAMES = []
+
+    for dict in table_column_names_tuples:
+        y = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(y)
+
+    # making query
+    # query = "DELETE FROM "+table_name+" WHERE " + condition
+    cols = ", ".join(TABLE_COLUMN_NAMES)
+    placeholders = ", ".join(["%s" for _ in range(len(TABLE_COLUMN_NAMES))])
+
+    # Create a connection to the MySQL database
+    cur = mysql.get_db().cursor()    
+
+
+    try:
+        # Execute an INSERT statement for each row of data
+        for row in csv_data:
+            query = "INSERT INTO " + table_name + " (" + cols + ") VALUES (" + placeholders +")"
+            data = [row[i] for i in range(len(row))]
+            cur.execute(query, data)
+            mysql.get_db().commit()
+
+
+        # table after query execution
+        cur = mysql.get_db().cursor()
+        cur.execute(f"SELECT * FROM {table_name}")
+        mysql.get_db().commit()
+        table_data_after = cur.fetchall()
+
+        return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after, table_name=table_name,
+                                table_col_names=TABLE_COLUMN_NAMES, second_table="YES")
+    except:
+        return render_template('errors.html', errorMessage=f"Upload Error- Recheck your filetype (should be CSV)/filesize or the columns of your file against value types/condition against the schema for {table_name}.")
+
+
+    
+        
+
+    
+
+
 
 
 if __name__ == '__main__':

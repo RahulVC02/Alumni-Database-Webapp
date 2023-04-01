@@ -26,11 +26,18 @@
 
     <div
         class="w-1/3 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
+        {% if search_msg %}
+        <div class="capitalize text-center text-3xl mb-6">{{search_msg}}</div>
+        {% else %}
+
         <div class="capitalize text-center text-3xl mb-6">Before</div>
+        {% endif %}
         {% if old_table_name %}
         <div class="capitalize text-center text-3xl mb-6">{{old_table_name}}</div>
         {% else %}
         {% endif %}
+
+        {% if table_before %}
         <table class="mx-auto">
             <thead>
                 <tr>
@@ -51,15 +58,25 @@
             {% endfor %}
 
         </table>
+        {% else %}
+        {% endif %}
+
+        
     </div>
 
+    {% if second_table=="YES" %}
     <div
         class="w-1/3 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
+        {% if search_msg %}
+
+        {% else %}
         <div class="capitalize text-center text-3xl mb-6">After</div>
         {% if new_table_name %}
         <div class="capitalize text-center text-3xl mb-6">{{new_table_name}}</div>
         {% else %}
         {% endif %}
+
+        {% if table_after %}
         <table class="mx-auto">
             <thead>
                 <tr>
@@ -82,9 +99,15 @@
         </table>
 
         <br>
+        {% else %}
+        {% endif %}
+
+        {% endif %}
 
 
     </div>
+    {% else %}
+    {% endif %}
 
     <div class="w-1/3 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)] flex flex-col justify-center">
         <button type="submit" class="mx-auto my-5">
