@@ -16,7 +16,7 @@ Session(app)
 
 mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
 mysql_user1 = os.environ.get('MYSQL_USER1', 'root')
-mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'Kalash@0309')
+mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'YourPass')
 mysql_user2 = os.environ.get('MYSQL_USER2', 'student')
 mysql_password2 = os.environ.get('MYSQL_PASSWORD2', 'Pass@1234')
 mysql_user3 = os.environ.get('MYSQL_USER3', 'employee')
@@ -26,10 +26,14 @@ mysql_db = os.environ.get('MYSQL_DB', 'alumni')
 
 mysql = None
 
-userdb = MySQL(app, prefix="userdb", host=mysql_host, user=mysql_user1, password=mysql_password1, db=login_db)
-mysql1 = MySQL(app, prefix="mysql1", host=mysql_host, user=mysql_user1, password=mysql_password1, db=mysql_db)
-mysql2 = MySQL(app, prefix="mysql2", host=mysql_host, user=mysql_user2, password=mysql_password2, db=mysql_db)
-mysql3 = MySQL(app, prefix="mysql3", host=mysql_host, user=mysql_user3, password=mysql_password3, db=mysql_db)
+userdb = MySQL(app, prefix="userdb", host=mysql_host,
+               user=mysql_user1, password=mysql_password1, db=login_db)
+mysql1 = MySQL(app, prefix="mysql1", host=mysql_host,
+               user=mysql_user1, password=mysql_password1, db=mysql_db)
+mysql2 = MySQL(app, prefix="mysql2", host=mysql_host,
+               user=mysql_user2, password=mysql_password2, db=mysql_db)
+mysql3 = MySQL(app, prefix="mysql3", host=mysql_host,
+               user=mysql_user3, password=mysql_password3, db=mysql_db)
 
 
 @dataclass
@@ -151,6 +155,11 @@ def tables():
 
             len_col = len(table_data[0])
 
+            # if table_name == "alumni":
+            #     img = bytes.fromhex(table_data[0][4].decode('ascii'))
+            #     print(img)
+            # img = b64encode(table_data[0][4]).decode('utf-8')
+
             cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
             cursor.execute(
                 "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
@@ -197,8 +206,8 @@ def tables_edit():
         if(x.get('update') == None):
             if(x.get('delete') == None):
                 if(x.get('rename') == None):
-                    if(x.get('search')==None):
-                        if(x.get('upload')==None):
+                    if(x.get('search') == None):
+                        if(x.get('upload') == None):
                             pressed = 'download'
                         else:
                             pressed = 'upload'
@@ -250,7 +259,7 @@ def tables_edit():
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Search",
                                display_edit_buttons="NO", display_edit_fields="YES", op='search', is_search_op="YES", len_col=len_col)
     elif(pressed == 'upload'):
-        return render_template('display_entries.html', userDetails = table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Upload File",
+        return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Upload File",
                                display_edit_buttons="NO", display_edit_fields="YES", op='upload', is_search_op="NO", len_col=len_col)
     elif(pressed == 'download'):
         return redirect(f'/tables/download/{table_name}')
@@ -298,6 +307,7 @@ def edit_insert():
     # executing query
     cur = mysql.get_db().cursor()
     try:
+        # cur.executescript(query, NEW_VALUES)
         cur.execute(query, NEW_VALUES)
         mysql.get_db().commit()
 
@@ -418,7 +428,8 @@ def edit_delete():
 
     try:
         cur = mysql.get_db().cursor()
-        cur.execute(query)
+        # cur.execute(query)
+        cur.executescript(query)
         mysql.get_db().commit()
 
         # table after query execution
@@ -480,9 +491,7 @@ def edit_rename():
         return render_template('errors.html', errorMessage="Rename Error- Re-check your input for New Table Name")
 
 
-
-
-#search table using keyword logic
+# search table using keyword logic
 
 @app.route('/tables/edit/search', methods=['POST'])
 def edit_search():
@@ -492,7 +501,7 @@ def edit_search():
     table_name = x['table_name']
     search_key = x['search_key']
 
-    OP=-1
+    OP = -1
 
     # getting column names
     cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
@@ -509,7 +518,8 @@ def edit_search():
     # query = "DELETE FROM "+table_name+" WHERE " + condition
     cols = ", ".join(TABLE_COLUMN_NAMES)
 
-    query = "SELECT * FROM "+table_name+" WHERE CONCAT(" +cols+ ") LIKE "+ "'%" + search_key + "%'"
+    query = "SELECT * FROM "+table_name + \
+        " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
     # print(query)
 
     try:
@@ -524,20 +534,18 @@ def edit_search():
         # print(type(OP))
         len_col = len(TABLE_COLUMN_NAMES)
         return render_template('display_entries.html', userDetails=OP, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="NO", display_edit_fields="NO", is_search_op="NO", len_col=len_col)
+                               display_edit_buttons="NO", display_edit_fields="NO", is_search_op="NO", len_col=len_col)
         # return render_template('tables_before_after.html', table_before = OP, table_after=None, table_name=table_name,
         #                        table_col_names=TABLE_COLUMN_NAMES, search_msg=f'The results for "{search_key}" are:', second_table="NO", search_key=search_key)
     except:
         return render_template('errors.html', errorMessage="Search Error- Re-check your search key against the schema and current database entries.", table_name=table_name)
 
 
-
-
 @app.route('/tables/download/<table_name>', methods=['GET'])
 def service_download(table_name):
     if session["logged_in"] == False:
         return redirect('/')
-    
+
     table_name = table_name
 
     # getting column names
@@ -547,12 +555,9 @@ def service_download(table_name):
     table_column_names_tuples = cursor.fetchall()
     TABLE_COLUMN_NAMES = []
 
-
     for dict in table_column_names_tuples:
         y = dict['COLUMN_NAME']
         TABLE_COLUMN_NAMES.append(y)
-
-
 
     # Table Data
     cur = mysql.get_db().cursor()
@@ -560,15 +565,12 @@ def service_download(table_name):
     mysql.get_db().commit()
     data = cur.fetchall()
 
-
-
     # Create a CSV file and write the data to it
     output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(TABLE_COLUMN_NAMES)  # Replace with your column names
     for row in data:
         writer.writerow(row)
-
 
     # Return the CSV file as a response with appropriate headers
     response = Response(
@@ -579,21 +581,17 @@ def service_download(table_name):
 
     return response
 
-    
-
-
 
 @app.route('/tables/edit/search/download', methods=['GET', 'POST'])
 def service_search_download():
     if session["logged_in"] == False:
         return redirect('/')
-    
+
     x = request.form
     table_name = x['table_name']
     search_key = x['search_key']
-    
 
-    #get column names
+    # get column names
     cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
     cursor.execute(
         "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
@@ -608,8 +606,9 @@ def service_search_download():
     # query = "DELETE FROM "+table_name+" WHERE " + condition
     cols = ", ".join(TABLE_COLUMN_NAMES)
 
-    query = "SELECT * FROM "+table_name+" WHERE CONCAT(" +cols+ ") LIKE "+ "'%" + search_key + "%'"
-    
+    query = "SELECT * FROM "+table_name + \
+        " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
+
     cur = mysql.get_db().cursor()
     cur.execute(query)
     mysql.get_db().commit()
@@ -623,7 +622,6 @@ def service_search_download():
     for row in data:
         writer.writerow(row)
 
-    
     file_name = table_name+'/'+search_key
 
     # Return the CSV file as a response with appropriate headers
@@ -634,28 +632,26 @@ def service_search_download():
     )
 
     return response
-    
-
 
 
 @app.route('/tables/edit/upload/<table_name>', methods=['POST'])
 def upload_file(table_name):
     uploaded_file = request.files['file']
     # Create a file object from the uploaded file data
-    file_stream = io.StringIO(uploaded_file.stream.read().decode("UTF8"), newline=None)
+    file_stream = io.StringIO(
+        uploaded_file.stream.read().decode("UTF8"), newline=None)
     # Parse the CSV data into a list of rows
     csv_data = csv.reader(file_stream)
 
-    #skip the first row
+    # skip the first row
     next(csv_data)
 
-    #Table before Upload
+    # Table before Upload
     # Table Before Insertion
     cur = mysql.get_db().cursor()
     cur.execute(f"SELECT * FROM {table_name}")
     mysql.get_db().commit()
     table_data_before = cur.fetchall()
-
 
     # getting column names
     cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
@@ -674,17 +670,16 @@ def upload_file(table_name):
     placeholders = ", ".join(["%s" for _ in range(len(TABLE_COLUMN_NAMES))])
 
     # Create a connection to the MySQL database
-    cur = mysql.get_db().cursor()    
-
+    cur = mysql.get_db().cursor()
 
     try:
         # Execute an INSERT statement for each row of data
         for row in csv_data:
-            query = "INSERT INTO " + table_name + " (" + cols + ") VALUES (" + placeholders +")"
+            query = "INSERT INTO " + table_name + \
+                " (" + cols + ") VALUES (" + placeholders + ")"
             data = [row[i] for i in range(len(row))]
             cur.execute(query, data)
             mysql.get_db().commit()
-
 
         # table after query execution
         cur = mysql.get_db().cursor()
@@ -693,7 +688,7 @@ def upload_file(table_name):
         table_data_after = cur.fetchall()
 
         return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after, table_name=table_name,
-                                table_col_names=TABLE_COLUMN_NAMES, second_table="YES")
+                               table_col_names=TABLE_COLUMN_NAMES, second_table="YES")
     except:
         return render_template('errors.html', errorMessage=f"Upload Error- Recheck your filetype (should be CSV)/filesize or the columns of your file against value types/condition against the schema for {table_name}.")
 

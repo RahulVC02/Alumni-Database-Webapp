@@ -24,6 +24,8 @@
                     class="bi bi-box-arrow-right"></i></a></li>
     </nav>
 
+    {% if display_edit_buttons=="ADMIN" or display_edit_buttons=="EMP" %}
+
     <div
         class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
         <div class="capitalize text-center text-3xl mb-6">{{table_name}}</div>
@@ -53,6 +55,39 @@
         </table>
     </div>
 
+    {% else %}
+
+    <!-- This is where we want the div to be centered -->
+
+    <div
+        class="w-1/2 mx-auto overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
+        <div class="capitalize text-center text-3xl mb-6">{{table_name}}</div>
+        <table class="mx-auto">
+            <thead>
+                <tr>
+                    {%for col_name in table_col_names%}
+                    <th>{{col_name}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+
+            {% for row in userDetails %}
+            <tr>
+
+                {% for data in row%}
+                <td>{{data}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+    {% endif %}
+
+    {% if display_edit_buttons=="ADMIN" or display_edit_buttons=="EMP" %}
+
     <div
         class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
 
@@ -68,6 +103,9 @@
                 <button type="submit" name="download" value={{table_name}}>Download Table</button>
                 <button type="submit" name="upload" value="{{table_name}}">Upload Entries as File</button>
             </form>
+            <form action="/tables" method="GET">
+                <button type="submit">Go to Tables List</button>
+            </form>
         </div>
 
         {% elif display_edit_buttons=="EMP" %}
@@ -78,6 +116,9 @@
                 <button type="submit" name="search" value={{table_name}}>Search</button>
                 <button type="submit" name="download" value={{table_name}}>Download Table</button>
                 <button type="submit" name="upload" value="{{table_name}}">Upload Entries as CSV</button>
+            </form>
+            <form action="/tables" method="GET">
+                <button type="submit">Go to Tables List</button>
             </form>
         </div>
 
@@ -185,7 +226,7 @@
 
         {% elif op=='upload' %}
         <div class="container flex flex-col">
-            <form  action='/tables/edit/upload/{{table_name}}' method="POST" enctype="multipart/form-data">
+            <form action='/tables/edit/upload/{{table_name}}' method="POST" enctype="multipart/form-data">
                 <label for="file">Pick file:</label>
                 <input type="file" name="file"><br>
                 <button type="submit">Upload</button>
@@ -198,17 +239,19 @@
 
         {% endif %}
 
-        <form action="/tables" method="GET">
+        <!-- <form action="/tables" method="GET">
             <button type="submit">Go to Tables List</button>
-        </form>
+        </form> -->
 
         <!-- {% if is_search_op=="YES" %}
         <button type="submit" class="mx-auto">
             <a href="/tables?tableName={{table_name}}">Go Back to {{table_name}} table</a>
         </button>
         {% endif %} -->
-
     </div>
+
+    {% endif %}
+
 </body>
 
 </html>
