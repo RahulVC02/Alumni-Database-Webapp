@@ -41,8 +41,18 @@
 
             {% for row in userDetails %}
             <tr>
+<<<<<<< HEAD
                 {% for col in row %}
                 <td>{{col}}</td>
+=======
+
+                {% for i in range(0, len_col) %}
+                {% if table_name=="alumni" and i==4 %}
+                <td><img src="data:image/png;charset=utf-8;base64,{{img[0]}}" alt="img" /></td>
+                {% else %}
+                <td>{{row[i]}}</td>
+                {% endif %}
+>>>>>>> 7311bc2f4eaa5d3cb70fd33b9e2efb03724e1a63
                 {% endfor %}
 
             </tr>
@@ -82,7 +92,7 @@
 
     {% endif %}
 
-    {% if display_edit_buttons=="ADMIN" or display_edit_buttons=="EMP" %}
+    {% if display_edit_buttons=="ADMIN" or display_edit_buttons=="EMP" or display_edit_buttons == "NO" %}
 
     <div
         class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
