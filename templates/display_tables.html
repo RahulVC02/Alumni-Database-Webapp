@@ -35,10 +35,38 @@
     </nav>
 
     <div class="text-2xl text-center">List of tables</div>
+    
     <div class="my-16 flex flex-wrap justify-center w-[72%] m-auto">
         {% for i in range(0,len) %}
         <div class="border-2 m-2 p-2 border-white rounded-lg hover:bg-[#7aa4fd] capitalize tooltip">
             <a href="/tables?tableName={{table_names[i]}}">{{table_names[i]}}</a>
+
+            {% if display_edit_buttons=="STUDENT" %}
+
+            <div class="tooltiptext flex justify-center">
+                {% if i==0 %}
+                    This table shows all the achievements of our alumni.
+                {% elif i==1 %}
+                    This table gives the contact details about our alumni.
+                {% elif i==2 %}
+                    This table contains all the information about our alumni's education.
+                {% elif i==3 %}
+                    This table contains all the information about our alumni's extra curricular activities.
+                {% elif i==4 %}
+                    This table contains all the information about the various projects that our alumni took.
+                {% elif i==5 %}
+                    This table has all the information about the various companies that our alumni have worked in.
+                {% elif i==6 %}
+                    This table has the list of all the departments and information about them.
+                {% elif i==7 %}
+                    This table has the list of all the faculty advisors.
+                {% elif i==8 %}
+                    This table has the list of all the instructors and information about them.
+                {% endif %}
+            </div>
+
+            {% else %}
+
             <div class="tooltiptext flex justify-center">
                 <table>
                     <thead>
@@ -59,6 +87,8 @@
                     </tbody>
                 </table>
             </div>
+
+            {% endif %}
             <!-- Field: {{schema[0]}}<br/>
             Type:  {{schema[1]}}<br/>
             Null: {{schema[2]}}<br/>

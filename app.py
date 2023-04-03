@@ -16,7 +16,7 @@ Session(app)
 
 mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
 mysql_user1 = os.environ.get('MYSQL_USER1', 'root')
-mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'mySQLs3rv3r!')
+mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'Kalash@0309')
 mysql_user2 = os.environ.get('MYSQL_USER2', 'student')
 mysql_password2 = os.environ.get('MYSQL_PASSWORD2', 'Pass@1234')
 mysql_user3 = os.environ.get('MYSQL_USER3', 'employee')
@@ -131,7 +131,10 @@ def tables():
         # return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Schema",
         #                     display_edit_buttons="NO",display_edit_fields="NO")
         TABLE_COLUMN_NAMES = ["Field", "Type", "Null", "Key"]
-        return render_template('display_tables.html', table_names=table_names, schema=schema, table_col_names=TABLE_COLUMN_NAMES, len=len(table_names), len_col=len(TABLE_COLUMN_NAMES))
+        if mysql == mysql1 or mysql == mysql3:
+            return render_template('display_tables.html', table_names=table_names, schema=schema, table_col_names=TABLE_COLUMN_NAMES, display_edit_buttons="EMP", len=len(table_names), len_col=len(TABLE_COLUMN_NAMES))
+        else:
+            return render_template('display_tables.html', table_names=table_names, schema=schema, table_col_names=TABLE_COLUMN_NAMES, display_edit_buttons="STUDENT", len=len(table_names), len_col=len(TABLE_COLUMN_NAMES))
     else:
         try:
             cur = mysql.get_db().cursor()
