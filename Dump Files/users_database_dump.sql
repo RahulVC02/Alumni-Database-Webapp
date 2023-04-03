@@ -1,9 +1,10 @@
+drop database users;
 create database users;
 use users;
 
 create table login_details(
      name varchar(30),
-     password varchar(30),
+     password varchar(30),	
      role varchar(30)
 );
 
