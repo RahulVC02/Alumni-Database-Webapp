@@ -39,14 +39,10 @@
 
             {% for row in userDetails %}
             <tr>
-
-                {% for i in range(0, len_col) %}
-                    {% if table_name=="alumni" and i==4 %}
-                        <td><img src="data:image/png;charset=utf-8;base64,{{img[0]}}" alt="img" /></td>
-                    {% else %}
-                        <td>{{row[i]}}</td>
-                    {% endif %}
+                {% for col in row %}
+                <td>{{col}}</td>
                 {% endfor %}
+
             </tr>
             {% endfor %}
 

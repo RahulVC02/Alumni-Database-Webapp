@@ -16,7 +16,8 @@ Session(app)
 
 mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
 mysql_user1 = os.environ.get('MYSQL_USER1', 'root')
-mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'Kalash@0309')
+mysql_password1 = os.environ.get('MYSQL_PASSWORD1', "mySQLs3rv3r!")
+# print(mysql_password1)
 mysql_user2 = os.environ.get('MYSQL_USER2', 'student')
 mysql_password2 = os.environ.get('MYSQL_PASSWORD2', 'Pass@1234')
 mysql_user3 = os.environ.get('MYSQL_USER3', 'employee')
@@ -52,8 +53,7 @@ def index():
 def login():
     session["user"] = User(request.form['name'], request.form['password'])
     cursor = userdb.get_db().cursor()
-    cursor.execute(
-        "SELECT password, role FROM login_details WHERE name=%s", (session["user"].name,))
+    cursor.execute("SELECT password, role FROM login_details WHERE name=%s", (session["user"].name,))
     userdb.get_db().commit()
     password = cursor.fetchone()
     cursor.close()
@@ -141,37 +141,39 @@ def tables():
             mysql.get_db().commit()
             table_data = cur.fetchall()
             cur.close()
-            img = None
-            if table_name == "alumni":
-                img = []
-                # img = table_data[0][4].decode('ascii')
-                # print(img)
-                img.append(b64encode(table_data[0][4]).decode('utf-8'))
-                # print(img)
+            # img = None
+            # if table_name == "alumni":
+            #     img = []
+            #     # img = table_data[0][4].decode('ascii')
+            #     # print(img)
+            #     img.append(b64encode(table_data[0][4]).decode('utf-8'))
+            #     # print(img)
 
-            len_col = len(table_data[0])
+            # len_col = len(table_data[0])
 
-            cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-            cursor.execute(
-                "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+            cursor = mysql.get_db().cursor()
+            cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+            # cursor.execute(
+                # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
             table_column_names_tuples = cursor.fetchall()
+            print(table_column_names_tuples)
             TABLE_COLUMN_NAMES = []
 
-            for dict in table_column_names_tuples:
-                x = dict['COLUMN_NAME']
-                TABLE_COLUMN_NAMES.append(x)
-
+            for x in table_column_names_tuples:
+                # x = dict['COLUMN_NAME']
+                TABLE_COLUMN_NAMES.append(x[0])
+            print(TABLE_COLUMN_NAMES)
             cursor.close()
 
             if mysql == mysql1:
                 return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="ADMIN", display_edit_fields="NO", is_search_op="NO", len_col=len_col, img=img)
+                                       display_edit_buttons="ADMIN", display_edit_fields="NO", is_search_op="NO")
             elif mysql == mysql2:
                 return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="STUDENT", display_edit_fields="NO", is_search_op="NO", len_col=len_col, img=img)
+                                       display_edit_buttons="STUDENT", display_edit_fields="NO", is_search_op="NO")
             elif mysql == mysql3:
                 return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="EMP", display_edit_fields="NO", is_search_op="NO", len_col=len_col, img=img)
+                                       display_edit_buttons="EMP", display_edit_fields="NO", is_search_op="NO")
 
             # return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
             #                        display_edit_buttons="ADMIN", display_edit_fields="NO")
