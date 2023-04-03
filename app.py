@@ -51,7 +51,6 @@ def index():
 @app.route('/', methods=['POST'])
 def login():
     session["user"] = User(request.form['name'], request.form['password'])
-    print(session["user"])
     cursor = userdb.get_db().cursor()
     cursor.execute(
         "SELECT password, role FROM login_details WHERE name=%s", (session["user"].name,))
@@ -166,10 +165,10 @@ def tables():
                                        display_edit_buttons="ADMIN", display_edit_fields="NO", is_search_op="NO", len_col=len_col, img=img)
             elif mysql == mysql2:
                 return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="STUDENT", display_edit_fields="NO", is_search_op="NO")
+                                       display_edit_buttons="STUDENT", display_edit_fields="NO", is_search_op="NO", len_col=len_col, img=img)
             elif mysql == mysql3:
                 return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="EMP", display_edit_fields="NO", is_search_op="NO")
+                                       display_edit_buttons="EMP", display_edit_fields="NO", is_search_op="NO", len_col=len_col, img=img)
 
             # return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
             #                        display_edit_buttons="ADMIN", display_edit_fields="NO")
