@@ -16,7 +16,7 @@ Session(app)
 
 mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
 mysql_user1 = os.environ.get('MYSQL_USER1', 'root')
-mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'YourPassword')
+mysql_password1 = os.environ.get('MYSQL_PASSWORD1', '2pml3xtd10A#')
 mysql_user2 = os.environ.get('MYSQL_USER2', 'student')
 mysql_password2 = os.environ.get('MYSQL_PASSWORD2', 'Pass@1234')
 mysql_user3 = os.environ.get('MYSQL_USER3', 'employee')
@@ -138,53 +138,53 @@ def tables():
         else:
             return render_template('display_tables.html', table_names=table_names, schema=schema, table_col_names=TABLE_COLUMN_NAMES, display_edit_buttons="STUDENT", len=len(table_names), len_col=len(TABLE_COLUMN_NAMES))
     else:
-        try:
-            cur = mysql.get_db().cursor()
-            cur.execute(f"SELECT * FROM {table_name}")
-            mysql.get_db().commit()
-            table_data = cur.fetchall()
-            cur.close()
-            # img = None
-            # if table_name == "alumni":
-            #     img = []
-            #     # img = table_data[0][4].decode('ascii')
-            #     # print(img)
-            #     img.append(b64encode(table_data[0][4]).decode('utf-8'))
-            #     # print(img)
+        # try:
+        cur = mysql.get_db().cursor()
+        cur.execute(f"SELECT * FROM {table_name}")
+        mysql.get_db().commit()
+        table_data = cur.fetchall()
+        cur.close()
+        # img = None
+        # if table_name == "alumni":
+        #     img = []
+        #     # img = table_data[0][4].decode('ascii')
+        #     # print(img)
+        #     img.append(b64encode(table_data[0][4]).decode('utf-8'))
+        #     # print(img)
 
-            # len_col = len(table_data[0])
+        # len_col = len(table_data[0])
 
-            cursor = mysql.get_db().cursor()
-            cursor.execute(f"SHOW COLUMNS FROM {table_name}")
-            # cursor.execute(
-                # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
-            table_column_names_tuples = cursor.fetchall()
-            print(table_column_names_tuples)
-            TABLE_COLUMN_NAMES = []
+        cursor = mysql.get_db().cursor()
+        cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+        # cursor.execute(
+            # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+        table_column_names_tuples = cursor.fetchall()
+        print(table_column_names_tuples)
+        TABLE_COLUMN_NAMES = []
 
-            for x in table_column_names_tuples:
-                # x = dict['COLUMN_NAME']
-                TABLE_COLUMN_NAMES.append(x[0])
-            print(TABLE_COLUMN_NAMES)
-            cursor.close()
+        for x in table_column_names_tuples:
+            # x = dict['COLUMN_NAME']
+            TABLE_COLUMN_NAMES.append(x[0])
+        print(TABLE_COLUMN_NAMES)
+        cursor.close()
 
-            if mysql == mysql1:
-                return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="ADMIN", display_edit_fields="NO", is_search_op="NO")
-            elif mysql == mysql2:
-                return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="STUDENT", display_edit_fields="NO", is_search_op="NO")
-            elif mysql == mysql3:
-                return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                                       display_edit_buttons="EMP", display_edit_fields="NO", is_search_op="NO")
+        if mysql == mysql1:
+            return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+                                    display_edit_buttons="ADMIN", display_edit_fields="NO", is_search_op="NO")
+        elif mysql == mysql2:
+            return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+                                    display_edit_buttons="STUDENT", display_edit_fields="NO", is_search_op="NO")
+        elif mysql == mysql3:
+            return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+                                    display_edit_buttons="EMP", display_edit_fields="NO", is_search_op="NO")
 
             # return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
             #                        display_edit_buttons="ADMIN", display_edit_fields="NO")
 
-        except Exception as e:
+        # except Exception as e:
 
-            print(e)
-            return render_template('errors.html', errorMessage="Table not defined")
+            # print(e)
+        return render_template('errors.html', errorMessage="Table not defined")
 
 
 # updating rendered output based on Operations button pressed.
@@ -424,8 +424,7 @@ def edit_delete():
 
     try:
         cur = mysql.get_db().cursor()
-        # cur.execute(query)
-        cur.executescript(query)
+        cur.execute(query)
         mysql.get_db().commit()
 
         # table after query execution
@@ -529,10 +528,10 @@ def edit_search():
         # print(OP)
         # print(type(OP))
         len_col = len(TABLE_COLUMN_NAMES)
-        return render_template('display_entries.html', userDetails=OP, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-                               display_edit_buttons="NO", display_edit_fields="NO", is_search_op="NO", len_col=len_col)
-        # return render_template('tables_before_after.html', table_before = OP, table_after=None, table_name=table_name,
-        #                        table_col_names=TABLE_COLUMN_NAMES, search_msg=f'The results for "{search_key}" are:', second_table="NO", search_key=search_key)
+        # return render_template('display_entries.html', userDetails=OP, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+        #                        display_edit_buttons="NO", display_edit_fields="NO", is_search_op="NO", len_col=len_col)
+        return render_template('tables_before_after.html', table_before = OP, table_after=None, table_name=table_name,
+                               table_col_names=TABLE_COLUMN_NAMES, search_msg=f'The results for "{search_key}" are:', second_table="NO", search_key=search_key)
     except:
         return render_template('errors.html', errorMessage="Search Error- Re-check your search key against the schema and current database entries.", table_name=table_name)
 
