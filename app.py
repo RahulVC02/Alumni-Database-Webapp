@@ -8,6 +8,7 @@ import pymysql
 from flaskext.mysql import MySQL
 from dataclasses import dataclass
 import os
+import json
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
@@ -16,7 +17,7 @@ Session(app)
 
 mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
 mysql_user1 = os.environ.get('MYSQL_USER1', 'root')
-mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'YourPass')
+mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'Joy@2003')
 mysql_user2 = os.environ.get('MYSQL_USER2', 'student')
 mysql_password2 = os.environ.get('MYSQL_PASSWORD2', 'Pass@1234')
 mysql_user3 = os.environ.get('MYSQL_USER3', 'employee')
@@ -25,7 +26,7 @@ login_db = os.environ.get('LOGIN_DB', 'users')
 mysql_db = os.environ.get('MYSQL_DB', 'alumni')
 
 mysql = None
-
+Role =None
 userdb = MySQL(app, prefix="userdb", host=mysql_host,
                user=mysql_user1, password=mysql_password1, db=login_db)
 mysql1 = MySQL(app, prefix="mysql1", host=mysql_host,
@@ -68,11 +69,15 @@ def login():
     elif(password[0] == session["user"].password):
         session["logged_in"] = True
         global mysql
+        global Role
         if(password[1] == "admin"):
+            Role = "Admin"
             mysql = mysql1
         elif(password[1] == "Student"):
+            Role = "Student"
             mysql = mysql2
         else:
+            Role = "Employee"
             mysql = mysql3
         return redirect('/tables')
     else:
@@ -241,26 +246,34 @@ def tables_edit():
     mysql.get_db().commit()
     table_data = cur.fetchall()
     len_col = len(table_data[0])
+    data = []
+    for row in range(len(table_data)):
+        # change to tuples
+        row_data = []
+        for i in range(len(table_data[row])):
+            row_data.append(str(table_data[row][i]))
+        data.append(row_data)
 
+    # data = json.dumps(data, ensure_ascii=False);
     # updating rendered output based on the button pressed
     if(pressed == 'insert'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Insert",
-                               display_edit_buttons="NO", display_edit_fields="YES", op='insert', is_search_op="NO", len_col=len_col)
+                               display_edit_buttons="NO", display_edit_fields="YES", op='insert', is_search_op="NO", len_col=len_col, role=Role, table = data)
     elif(pressed == 'update'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Update",
-                               display_edit_buttons="NO", display_edit_fields="YES", op='update', is_search_op="NO", len_col=len_col)
+                               display_edit_buttons="NO", display_edit_fields="YES", op='update', is_search_op="NO", len_col=len_col, role= Role, table = data)
     elif(pressed == 'delete'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Delete",
-                               display_edit_buttons="NO", display_edit_fields="YES", op='delete', is_search_op="NO", len_col=len_col)
+                               display_edit_buttons="NO", display_edit_fields="YES", op='delete', is_search_op="NO", len_col=len_col, role = Role, table = data)
     elif(pressed == 'rename'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Rename",
-                               display_edit_buttons="NO", display_edit_fields="YES", op='rename', is_search_op="NO", len_col=len_col)
+                               display_edit_buttons="NO", display_edit_fields="YES", op='rename', is_search_op="NO", len_col=len_col, role = Role, table = data)
     elif(pressed == 'search'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Search",
-                               display_edit_buttons="NO", display_edit_fields="YES", op='search', is_search_op="YES", len_col=len_col)
+                               display_edit_buttons="NO", display_edit_fields="YES", op='search', is_search_op="YES", len_col=len_col, role = Role, table = data)
     elif(pressed == 'upload'):
         return render_template('display_entries.html', userDetails=table_data, table_col_names=TABLE_COLUMN_NAMES, table_name=table_name, EntriesOrSchema="Upload File",
-                               display_edit_buttons="NO", display_edit_fields="YES", op='upload', is_search_op="NO", len_col=len_col)
+                               display_edit_buttons="NO", display_edit_fields="YES", op='upload', is_search_op="NO", len_col=len_col, role = Role, table = data)
     elif(pressed == 'download'):
         return redirect(f'/tables/download/{table_name}')
     else:
@@ -404,7 +417,13 @@ def edit_delete():
         return redirect('/')
     x = request.form
     table_name = x['table_name']
-    condition = x['condition']
+    
+    if (Role == 'Employee'):
+        condition = x['drop1'] + " = " + x['drop2']
+        # print(condition)
+    else:
+        condition = x['condition']
+        # print(condition)
 
     # Table Before Insertion
     cur = mysql.get_db().cursor()

@@ -93,7 +93,7 @@
 
         {% if display_edit_buttons=="ADMIN" %}
 
-        <div class="container my-6 mx-auto">
+        < class="container my-6 mx-auto">
             <form action="/tables/edit" method="POST">
                 <button type="submit" name="insert" value={{table_name}}>Insert</button>
                 <button type="submit" name="update" value={{table_name}}>Update</button>
@@ -174,23 +174,56 @@
         </div>
 
         {% elif op=='delete' %}
-        <div class="container flex flex-col">
-            <h4>DELETE FROM {{table_name}}</h4>
-            <h4>WHERE</h4>
-            <br>
-
-            <form action="/tables/edit/delete" method="POST">
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Condition</label>
-                <input type="text" name="condition"
+             {% if role == 'Admin'%}
+             <div class="container flex flex-col">
+                 <h4>DELETE FROM {{table_name}}</h4>
+                 <h4>WHERE</h4>
+                 <br>
+     
+                 <form action="/tables/edit/delete" method="POST">
+                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Condition</label>
+                     <input type="text" name="condition"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="condition">
+                         placeholder="condition">
+     
+                     <input type="hidden" name='table_name' value={{table_name}}>
+                     <br>
+                     <button type="submit">Execute</button>
+                 </form>
+                 <br>
+             </div>
 
-                <input type="hidden" name='table_name' value={{table_name}}>
-                <br>
-                <button type="submit">Execute</button>
-            </form>
-            <br>
-        </div>
+             {% elif role == 'Employee'%}
+             <div class="container flex flex-col">
+                 <h4>DELETE FROM {{table_name}}</h4>
+                 <h4>WHERE</h4>
+                 <br>
+     
+                 <form action="/tables/edit/delete" method="POST">
+                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an attribute</label>
+                     <select id="column-dropdown"
+                             name = "drop1"
+                             onchange="populateValuesDropdown()"
+                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                             placeholder="drop1">
+                             {% for col_name in table_col_names %}
+                             <option value="{{ col_name }}">{{ col_name }}</option>
+                         {% endfor %}
+                     </select>
+                     <br>
+                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select the value</label>
+                     <select id="values-dropdown"
+                             name = "drop2"
+                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                             placeholder="drop2">
+                     </select>
+                     <input type="hidden" name='table_name' value={{table_name}}>
+                     <br>
+                     <button type="submit">Execute</button>
+                 </form>
+                 <br>
+             </div>
+             {% endif %}
 
         {% elif op=='rename' %}
         <div class="container flex flex-col">
@@ -226,7 +259,7 @@
 
         {% elif op=='upload' %}
         <div class="container flex flex-col">
-            <form action='/tables/edit/upload/{{table_name}}' method="POST" enctype="multipart/form-data">
+            <form  action='/tables/edit/upload/{{table_name}}' method="POST" enctype="multipart/form-data">
                 <label for="file">Pick file:</label>
                 <input type="file" name="file"><br>
                 <button type="submit">Upload</button>
@@ -248,10 +281,90 @@
             <a href="/tables?tableName={{table_name}}">Go Back to {{table_name}} table</a>
         </button>
         {% endif %} -->
+
     </div>
-
     {% endif %}
+    <script>
+        function populateValuesDropdown() {
+            var userDetails = '{{table}}';
+            var columnDropdown = document.getElementById("column-dropdown");
+            var selectedColumn = columnDropdown.options.selectedIndex;
+            var valuesDropdown = document.getElementById("values-dropdown");
+            valuesDropdown.innerHTML = "";
+            // console.log(userDetails);
 
+            var data_js = [];
+            let str = '';
+            var flag = 0;
+            var semi = 0;
+            var row_js = [];
+            for (var j = 0; j < userDetails.length; j++) {
+                var row = userDetails[j];
+                // console.log(row)
+                if (row == '&'){
+                    flag=1;
+                    if (str != ']'){
+                        if (str != ''){
+                            row_js.push(str);
+                        }
+                    }
+                    
+                    str= '';
+                }
+                if (row == ','){
+                    if (semi == 1){
+                        flag=1;
+                    }
+                    
+                }
+            
+                if (row == '['){
+                    flag=1;
+                }
+                if (row == ']'){
+                    flag=1;
+                    data_js.push(row_js);
+                    // console.log(row_js)
+                    // console.log("ji")
+                    row_js = [];
+                }
+
+                if (flag == 0){
+                    str += row;
+                    // semi=0;
+                    // console.log(str);
+                }
+                semi=0;
+        
+                if (row == ';'){
+                    flag=0;
+                    semi = 1;
+                }
+                
+            }
+            userDetails = data_js;
+
+            var uniqueValues = new Set(); // create a Set to store unique values
+
+            for (var i = 0; i < userDetails.length; i++) {
+                var row = userDetails[i];
+                var value = row[selectedColumn];
+                if (!uniqueValues.has(value)) { // check if the value has already been added to the Set
+                    uniqueValues.add(value); // add the value to the Set if it hasn't been added yet
+                    var option = document.createElement("option");
+                    option.value = value;
+                    option.text = value;
+                    valuesDropdown.add(option);
+                }
+            }
+        }
+        
+        window.onload = function() {
+            // var tableData = JSON.parse('{{ table }}');
+            populateValuesDropdown();
+        };
+        
+    </script>    
 </body>
 
 </html>
