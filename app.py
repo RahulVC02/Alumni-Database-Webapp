@@ -17,7 +17,7 @@ Session(app)
 
 mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
 mysql_user1 = os.environ.get('MYSQL_USER1', 'root')
-mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'Joy@2003')
+mysql_password1 = os.environ.get('MYSQL_PASSWORD1', '2pml3xtd10A#')
 mysql_user2 = os.environ.get('MYSQL_USER2', 'student')
 mysql_password2 = os.environ.get('MYSQL_PASSWORD2', 'Pass@1234')
 mysql_user3 = os.environ.get('MYSQL_USER3', 'employee')
@@ -164,13 +164,13 @@ def tables():
         # cursor.execute(
             # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
         table_column_names_tuples = cursor.fetchall()
-        print(table_column_names_tuples)
+        # print(table_column_names_tuples)
         TABLE_COLUMN_NAMES = []
 
         for x in table_column_names_tuples:
             # x = dict['COLUMN_NAME']
             TABLE_COLUMN_NAMES.append(x[0])
-        print(TABLE_COLUMN_NAMES)
+        # print(TABLE_COLUMN_NAMES)
         cursor.close()
 
         if mysql == mysql1:
@@ -415,7 +415,7 @@ def edit_delete():
     table_name = x['table_name']
     
     if (Role == 'Employee'):
-        condition = x['drop1'] + " = " + x['drop2']
+        condition = x['drop1'] + " = " + "'"+x['drop2']+"'"
         # print(condition)
     else:
         condition = x['condition']
@@ -453,9 +453,9 @@ def edit_delete():
         table_data_after = cur.fetchall()
 
         return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after, table_name=table_name,
-                               table_col_names=TABLE_COLUMN_NAMES, second_table="YES")
+                                table_col_names=TABLE_COLUMN_NAMES, second_table="YES")
     except Exception as e:
-        print(e)
+        # print(e)
         return render_template('errors.html', errorMessage="Delete Error- Re-check your delete condition against the schema and current database entries.")
 
 
