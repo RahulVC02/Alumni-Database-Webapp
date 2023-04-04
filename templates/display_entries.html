@@ -89,7 +89,7 @@
 
         {% if display_edit_buttons=="ADMIN" %}
 
-        < class="container my-6 mx-auto">
+        <div class="container my-6 mx-auto">
             <form action="/tables/edit" method="POST">
                 <button type="submit" name="insert" value={{table_name}}>Insert</button>
                 <button type="submit" name="update" value={{table_name}}>Update</button>
@@ -345,7 +345,7 @@
             for (var i = 0; i < userDetails.length; i++) {
                 var row = userDetails[i];
                 var value = row[selectedColumn];
-                if (!uniqueValues.has(value)) { // check if the value has already been added to the Set
+                if (!uniqueValues.has(value) && typeof value !== 'undefined') { // check if the value has already been added to the Set
                     uniqueValues.add(value); // add the value to the Set if it hasn't been added yet
                     var option = document.createElement("option");
                     option.value = value;
