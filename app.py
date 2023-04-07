@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, flash, Response
 from flask_session import Session
 # from flask_mysqldb import MySQL
+from flask_mail import Mail, Message
 import io
 from base64 import b64encode
 import csv
@@ -14,6 +15,19 @@ app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
+
+#mail configs
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'alumni.dbms.g2@gmail.com'
+app.config['MAIL_PASSWORD'] = 'uqnouuxkfueqzbvt'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+
+mail = Mail(app)
+mail_list = None
+
 
 mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
 mysql_user1 = os.environ.get('MYSQL_USER1', 'root')
@@ -507,7 +521,7 @@ def edit_rename():
 
 # search table using keyword logic
 
-@app.route('/tables/edit/search', methods=['POST'])
+@app.route('/tables/edit/search/', methods=['POST'])
 def edit_search():
     if session["logged_in"] == False:
         return redirect('/')
@@ -515,6 +529,8 @@ def edit_search():
     table_name = x['table_name']
     search_key = x['search_key']
 
+    global mail_list
+    mail_list = None
     OP = -1
 
     # getting column names
@@ -544,6 +560,14 @@ def edit_search():
         OP = cur.fetchall()
         # OP = [list(tup) for tup in OUTPUT]
 
+        if(mail_list==None):
+            q_query = "SELECT Full_Name,Email FROM "+table_name + \
+        " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
+            cur = mysql.get_db().cursor()
+            cur.execute(q_query)
+            mysql.get_db().commit()
+
+            mail_list=cur.fetchall()
         # print(OP)
         # print(type(OP))
         len_col = len(TABLE_COLUMN_NAMES)
@@ -650,6 +674,9 @@ def service_search_download():
 
 @app.route('/tables/edit/upload/<table_name>', methods=['POST'])
 def upload_file(table_name):
+    if session["logged_in"] == False:
+        return redirect('/')
+    
     uploaded_file = request.files['file']
     # Create a file object from the uploaded file data
     file_stream = io.StringIO(
@@ -702,9 +729,186 @@ def upload_file(table_name):
         table_data_after = cur.fetchall()
 
         return render_template('tables_before_after.html', table_before=table_data_before, table_after=table_data_after, table_name=table_name,
-                               table_col_names=TABLE_COLUMN_NAMES, second_table="YES")
+                                table_col_names=TABLE_COLUMN_NAMES, second_table="YES")
     except:
         return render_template('errors.html', errorMessage=f"Upload Error- Recheck your filetype (should be CSV)/filesize or the columns of your file against value types/condition against the schema for {table_name}.")
+
+
+
+
+@app.route('/alumni/mail', methods=['GET','POST'])
+def mail_alumni():
+    if session["logged_in"] == False:
+        return redirect('/')
+    
+    global mail_list
+
+    if(request.method=='GET'):
+        # x = request.form
+        # print(x)
+        table_name = request.args.get('name_table')
+        search_key = request.args.get('key_search')
+
+        print(table_name,search_key)
+
+        
+        cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+        cursor.execute(
+            "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+        table_column_names_tuples = cursor.fetchall()
+        TABLE_COLUMN_NAMES = []
+        for dict in table_column_names_tuples:
+            y = dict['COLUMN_NAME']
+            TABLE_COLUMN_NAMES.append(y)
+        cols = ", ".join(TABLE_COLUMN_NAMES)
+        query = "SELECT Full_Name,Email FROM "+table_name + \
+            " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
+        cur = mysql.get_db().cursor()
+        cur.execute(query)
+        mysql.get_db().commit()
+        OP = cur.fetchall()
+
+        if(mail_list==None):
+            mail_list=OP
+        
+        col_names=["Name","Email"]
+
+        return render_template('mail.html', table_before=mail_list, table_col_names=col_names, enable_send="YES", search_key=search_key, table_name=table_name)
+    
+    else:
+        x = request.form
+        table_name = x['table_name']
+        search_key = x['search_key']
+
+        
+        cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+        cursor.execute(
+            "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+        table_column_names_tuples = cursor.fetchall()
+        TABLE_COLUMN_NAMES = []
+        for dict in table_column_names_tuples:
+            y = dict['COLUMN_NAME']
+            TABLE_COLUMN_NAMES.append(y)
+        cols = ", ".join(TABLE_COLUMN_NAMES)
+        query = "SELECT Full_Name,Email FROM "+table_name + \
+            " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
+        cur = mysql.get_db().cursor()
+        cur.execute(query)
+        mysql.get_db().commit()
+        OP = cur.fetchall()
+
+        if(mail_list==None):
+            mail_list=OP
+        
+        col_names=["Name","Email"]
+
+        return render_template('mail.html', table_before=mail_list, table_col_names=col_names, enable_send="YES", search_key=search_key, table_name=table_name)
+
+
+
+@app.route('/alumni/mail/edit', methods=['POST'])
+def edit_mail():
+    if session["logged_in"] == False:
+        return redirect('/')
+    
+    x = request.form
+    pressed = None
+
+    if(x.get('add_mail') == None):
+        pressed='remove_mail'
+    else:
+        pressed='add_mail'
+
+    global mail_list
+    table_name = x['table_name']
+    search_key = x['search_key']
+
+    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    cursor.execute(
+        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    table_column_names_tuples = cursor.fetchall()
+    TABLE_COLUMN_NAMES = []
+    for dict in table_column_names_tuples:
+        y = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(y)
+    cols = ", ".join(TABLE_COLUMN_NAMES)
+    query = "SELECT Full_Name,Email FROM "+table_name + \
+        " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
+    cur = mysql.get_db().cursor()
+    cur.execute(query)
+    mysql.get_db().commit()
+    OP = cur.fetchall()
+
+    if(mail_list==None):
+        mail_list=OP
+
+    col_names=["Name","Email"]
+
+
+
+    if(pressed=='add_mail'):
+        return render_template('mail.html',table_before = mail_list, table_col_names = col_names, enable_edit="YES", op="Add", search_key=search_key, table_name=table_name)
+    else:
+        return render_template('mail.html',table_before = mail_list, table_col_names = col_names, enable_edit="YES", op="Remove", search_key=search_key, table_name=table_name)
+
+        
+@app.route('/alumni/mail/edit/update', methods=['POST'])
+def update_mail_list():
+    if session["logged_in"] == False:
+        return redirect('/')
+
+    x = request.form
+    table_name = x['table_name']
+    search_key = x['search_key']
+
+    pressed=None    
+    if(x.get('Add') == None):
+        pressed='Remove'
+    else:
+        pressed='Add'
+
+
+    alum_name = x['alum_name']
+    alum_mail = x['alum_mail']
+
+    # print(alum_name,alum_mail)
+
+    global mail_list
+    item = (alum_name,alum_mail)
+    # print(item)
+
+    if(pressed=='Add'):
+        new_mail_list = mail_list + (item,)
+        mail_list = new_mail_list
+    else:
+        mail_list = tuple(t for t in mail_list if t!=item)
+    
+
+    col_names=["Name","Email"]
+    return render_template('mail.html',table_before = mail_list, table_col_names = col_names, enable_edit="YES", op=pressed, search_key=search_key, table_name=table_name)
+
+
+
+
+
+@app.route('/alumni/mail/send', methods=['POST'])
+def send_mail():
+    x = request.form
+    subj = x['subject']
+    body = x['body']
+
+    global mail_list
+    print(mail_list)
+
+    receiver_ids= [alum[1] for alum in mail_list] 
+    print(receiver_ids)
+    msg = Message(subj,sender='alumni_dbms@g2supremacy.com',recipients=receiver_ids)
+    msg.body = body
+    mail.send(msg)
+
+    mail_list = None
+
+    return redirect('/tables')
 
 
 if __name__ == '__main__':

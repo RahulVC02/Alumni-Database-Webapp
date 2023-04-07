@@ -125,7 +125,18 @@
             <button type="submit" class="mx-auto my-5">Download Search Results</button>
             <input type="hidden" name='table_name' value={{table_name}}>
             <input type="hidden" name='search_key' value={{search_key}}>
+
         </form>
+
+        {% if table_name=="alumni" %}
+        <form action="/alumni/mail" method="POST" class="mx-auto my-5">
+            <button type="submit" class="mx-auto my-5">Mail These Alumni</button>
+            <input type="hidden" name='table_name' value={{table_name}}>
+            <input type="hidden" name="search_key" value={{search_key}}>
+        </form>
+        {% else %}
+        {% endif %}
+
         {% else %}
         {% endif %}
     </div>

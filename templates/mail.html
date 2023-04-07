@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename='styles/style.css')}}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="icon" href="../static/group.png">
+    <title>Mail Alumni</title>
+</head>
+<body class="p-0 m-0 flex bg-[var(--color1)]">
+
+    <nav
+        class="list-none flex flex-col justify-center items-center px-4 text-xl fixed right-0 z-50 transition-all top-1/3">
+        <li class="bg-gray-900 p-3 rounded-full hover:bg-yellow-300" id="back"><a href="javascript:history.back()"><i
+                    class=" bi bi-back"></i></a></li>
+        <li class="bg-gray-900 p-3 rounded-full my-6 hover:bg-yellow-300" id="home"><a href="/tables"><i
+                    class="bi bi-house h-8 w-8"></i></a></li>
+        <li class="bg-gray-900 p-3 rounded-full hover:bg-yellow-300" id="logout"><a href="/logout"><i
+                    class="bi bi-box-arrow-right"></i></a></li>
+    </nav>
+
+    <div
+        class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
+        
+        <div class="capitalize text-center text-3xl mb-6">Mailing List</div>
+
+        {% if table_before %}
+        <table class="mx-auto">
+            <thead>
+                <tr>
+                    {%for col_name in table_col_names%}
+                    <th>{{col_name}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+
+            {% for row in table_before %}
+            <tr>
+
+                {% for data in row%}
+                <td>{{data}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+
+        </table>
+        {% else %}
+        {% endif %}
+
+        
+    </div>
+
+
+    <div
+        class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
+    <div class="container my-6 mx-auto">
+
+        <form action="/alumni/mail/edit" method="POST">
+
+            <input type="hidden" name='table_name' value={{table_name}}>
+            <input type="hidden" name='search_key' value={{search_key}}>
+
+            <button type="submit" name="add_mail">
+                Add To List
+            </button>
+
+            <button type="submit" name="remove_mail">
+                Remove From List
+            </button>
+
+            
+
+        </form>
+    </div>
+
+    {% if enable_edit %}
+    <div class="container my-6 mx-auto">
+
+        <form action="/alumni/mail/edit/update" method="POST">
+
+            <input type="hidden" name='table_name' value={{table_name}}>
+            <input type="hidden" name='search_key' value={{search_key}}>
+            <input type="text" name='alum_name'
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Alumnus Name">
+            
+            <input type="text" name='alum_mail'
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Alumnus Email">
+            
+            
+            <button type="submit" name={{op}} >
+                {{op}}- Execute
+            </button>
+
+        </form>
+
+        <form action="/alumni/mail" method="GET">
+            <input type="hidden" name='name_table' value={{table_name}}>
+            <input type="hidden" name='key_search' value={{search_key}}>
+            <button type="submit" name='back_to_send'>Go Back to Mail Page</button>
+        </form>
+
+    </div>
+    {% endif %}
+
+
+    {% if enable_send %}
+    <div class="container my-6 mx-auto">
+        <form action="/alumni/mail/send" method="POST">
+            <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Subject" style="height: 40px; width: 500px;" name="subject">
+            <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Body" style="height: 300px; width: 500px; margin-top: 25px; padding-top: px;" name="body" >
+            <button type="submit" name="send_mail" style="margin-top: 25px">Send The Mail</button>
+        </form>
+    </div>
+    {% endif %}
+
+    </div>
+
+    <!-- class="mx-auto my-5" -->
+    
+</body>
+</html>
