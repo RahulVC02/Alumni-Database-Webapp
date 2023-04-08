@@ -526,31 +526,31 @@ def edit_search():
         " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
     # print(query)
 
-    try:
+    # try:
+    cur = mysql.get_db().cursor()
+    cur.execute(query)
+    mysql.get_db().commit()
+
+    OP = cur.fetchall()
+    # OP = [list(tup) for tup in OUTPUT]
+
+    if(mail_list==None and table_name=="alumni"):
+        q_query = "SELECT Full_Name,Email FROM "+table_name + \
+    " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
         cur = mysql.get_db().cursor()
-        cur.execute(query)
+        cur.execute(q_query)
         mysql.get_db().commit()
 
-        OP = cur.fetchall()
-        # OP = [list(tup) for tup in OUTPUT]
-
-        if(mail_list==None):
-            q_query = "SELECT Full_Name,Email FROM "+table_name + \
-        " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
-            cur = mysql.get_db().cursor()
-            cur.execute(q_query)
-            mysql.get_db().commit()
-
-            mail_list=cur.fetchall()
-        # print(OP)
-        # print(type(OP))
-        len_col = len(TABLE_COLUMN_NAMES)
-        # return render_template('display_entries.html', userDetails=OP, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-        #                        display_edit_buttons="NO", display_edit_fields="NO", is_search_op="NO", len_col=len_col)
-        return render_template('tables_before_after.html', table_before = OP, table_after=None, table_name=table_name,
-                               table_col_names=TABLE_COLUMN_NAMES, search_msg=f'The results for "{search_key}" are:', second_table="NO", search_key=search_key)
-    except:
-        return render_template('errors.html', errorMessage="Search Error- Re-check your search key against the schema and current database entries.", table_name=table_name)
+        mail_list=cur.fetchall()
+    # print(OP)
+    # print(type(OP))
+    len_col = len(TABLE_COLUMN_NAMES)
+    # return render_template('display_entries.html', userDetails=OP, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+    #                        display_edit_buttons="NO", display_edit_fields="NO", is_search_op="NO", len_col=len_col)
+    return render_template('tables_before_after.html', table_before = OP, table_after=None, table_name=table_name,
+                            table_col_names=TABLE_COLUMN_NAMES, search_msg=f'The results for "{search_key}" are:', second_table="NO", search_key=search_key)
+    # except:
+    return render_template('errors.html', errorMessage="Search Error- Re-check your search key against the schema and current database entries.", table_name=table_name)
 
 
 @app.route('/tables/download/<table_name>', methods=['GET'])
