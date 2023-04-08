@@ -88,35 +88,58 @@
         class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
 
         {% if display_edit_buttons=="ADMIN" %}
-
+        
         <div class="container my-6 mx-auto">
-            <form action="/tables/edit" method="POST">
-                <button type="submit" name="insert" value={{table_name}}>Insert</button>
-                <button type="submit" name="update" value={{table_name}}>Update</button>
-                <button type="submit" name="delete" value={{table_name}}>Delete</button>
-                <button type="submit" name="rename" value={{table_name}}>Rename</button>
-                <button type="submit" name="search" value={{table_name}}>Search</button>
-                <button type="submit" name="download" value={{table_name}}>Download Table</button>
-                <button type="submit" name="upload" value="{{table_name}}">Upload Entries as File</button>
-            </form>
-            <form action="/tables" method="GET">
-                <button type="submit">Go to Tables List</button>
-            </form>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-flex">
+                        <div>
+                            <form action="/tables/edit" method="POST">
+                                <button type="submit" name="insert" value={{table_name}}>Insert</button>
+                                <button type="submit" name="update" value={{table_name}}>Update</button>
+                                <button type="submit" name="delete" value={{table_name}}>Delete</button>
+                                <button type="submit" name="rename" value={{table_name}}>Rename</button>
+                                <button type="submit" name="search" value={{table_name}}>Search</button>
+                                <button type="submit" name="download" value={{table_name}}>Download Table</button>
+                                <button type="submit" name="upload" value="{{table_name}}">Upload Entries as File</button>
+                            </form>
+                        </div>
+                        <br>
+                        <div class="ml-auto">
+                            <form action="/tables" method="GET">
+                                <button type="submit">Go to Tables List</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         {% elif display_edit_buttons=="EMP" %}
         <div class="container my-6 mx-auto">
-            <form action="/tables/edit" method="POST">
-                <button type="submit" name="insert" value={{table_name}}>Insert</button>
-                <button type="submit" name="delete" value={{table_name}}>Delete</button>
-                <button type="submit" name="search" value={{table_name}}>Search</button>
-                <button type="submit" name="download" value={{table_name}}>Download Table</button>
-                <button type="submit" name="upload" value="{{table_name}}">Upload Entries as CSV</button>
-            </form>
-            <form action="/tables" method="GET">
-                <button type="submit">Go to Tables List</button>
-            </form>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-flex">
+                        <div>
+                            <form action="/tables/edit" method="POST">
+                                <button type="submit" name="insert" value={{table_name}}>Insert</button>
+                                <button type="submit" name="delete" value={{table_name}}>Delete</button>
+                                <button type="submit" name="search" value={{table_name}}>Search</button>
+                                <button type="submit" name="download" value={{table_name}}>Download Table</button>
+                                <button type="submit" name="upload" value="{{table_name}}">Upload Entries as CSV</button>
+                            </form>
+                        </div>
+                        <br>
+                        <div class="ml-auto">
+                            <form action="/tables" method="GET">
+                                <button type="submit">Go to Tables List</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        
 
         {% elif display_edit_fields=="YES" %}
 
