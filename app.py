@@ -239,16 +239,28 @@ def tables_edit():
 
     # finding column names
     table_name = x[pressed]
-    # print(mysql.get_db().cursor())
-    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-    cursor.execute(
-        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # # print(mysql.get_db().cursor())
+    # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    # cursor.execute(
+    #     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # table_column_names_tuples = cursor.fetchall()
+    # TABLE_COLUMN_NAMES = []
+
+    # for dict in table_column_names_tuples:
+    #     y = dict['COLUMN_NAME']
+    #     TABLE_COLUMN_NAMES.append(y)
+
+    cursor = mysql.get_db().cursor()
+    cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+    # cursor.execute(
+        # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
     table_column_names_tuples = cursor.fetchall()
+    # print(table_column_names_tuples)
     TABLE_COLUMN_NAMES = []
 
-    for dict in table_column_names_tuples:
-        y = dict['COLUMN_NAME']
-        TABLE_COLUMN_NAMES.append(y)
+    for x in table_column_names_tuples:
+        # x = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(x[0])
 
     # finding table
     cur = mysql.get_db().cursor()
@@ -307,15 +319,27 @@ def edit_insert():
     table_data_before = cur.fetchall()
 
     # getting column names
-    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-    cursor.execute(
-        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    # cursor.execute(
+    #     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # table_column_names_tuples = cursor.fetchall()
+    # TABLE_COLUMN_NAMES = []
+
+    # for dict in table_column_names_tuples:
+    #     y = dict['COLUMN_NAME']
+    #     TABLE_COLUMN_NAMES.append(y)
+
+    cursor = mysql.get_db().cursor()
+    cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+    # cursor.execute(
+        # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
     table_column_names_tuples = cursor.fetchall()
+    # print(table_column_names_tuples)
     TABLE_COLUMN_NAMES = []
 
-    for dict in table_column_names_tuples:
-        y = dict['COLUMN_NAME']
-        TABLE_COLUMN_NAMES.append(y)
+    for x in table_column_names_tuples:
+        # x = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(x[0])
 
     # filling new values
     NEW_VALUES = []
@@ -367,15 +391,27 @@ def edit_update():
     table_data_before = cur.fetchall()
 
     # getting column names
-    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-    cursor.execute(
-        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    # cursor.execute(
+    #     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # table_column_names_tuples = cursor.fetchall()
+    # TABLE_COLUMN_NAMES = []
+
+    # for dict in table_column_names_tuples:
+    #     y = dict['COLUMN_NAME']
+    #     TABLE_COLUMN_NAMES.append(y)
+
+    cursor = mysql.get_db().cursor()
+    cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+    # cursor.execute(
+        # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
     table_column_names_tuples = cursor.fetchall()
+    # print(table_column_names_tuples)
     TABLE_COLUMN_NAMES = []
 
-    for dict in table_column_names_tuples:
-        y = dict['COLUMN_NAME']
-        TABLE_COLUMN_NAMES.append(y)
+    for x in table_column_names_tuples:
+        # x = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(x[0])
 
     # filling new values
 
@@ -442,15 +478,27 @@ def edit_delete():
     table_data_before = cur.fetchall()
 
     # getting column names
-    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-    cursor.execute(
-        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    # cursor.execute(
+    #     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # table_column_names_tuples = cursor.fetchall()
+    # TABLE_COLUMN_NAMES = []
+
+    # for dict in table_column_names_tuples:
+    #     y = dict['COLUMN_NAME']
+    #     TABLE_COLUMN_NAMES.append(y)
+
+    cursor = mysql.get_db().cursor()
+    cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+    # cursor.execute(
+        # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
     table_column_names_tuples = cursor.fetchall()
+    # print(table_column_names_tuples)
     TABLE_COLUMN_NAMES = []
 
-    for dict in table_column_names_tuples:
-        y = dict['COLUMN_NAME']
-        TABLE_COLUMN_NAMES.append(y)
+    for x in table_column_names_tuples:
+        # x = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(x[0])
 
     # making query
     query = "DELETE FROM "+table_name+" WHERE " + condition
@@ -490,15 +538,27 @@ def edit_rename():
     table_data_before = cur.fetchall()
 
     # getting column names
-    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-    cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s",
-                   ("alumni", old_table_name,))
+    # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    # cursor.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s",
+    #                ("alumni", old_table_name,))
+    # table_column_names_tuples = cursor.fetchall()
+    # TABLE_COLUMN_NAMES = []
+
+    # for dict in table_column_names_tuples:
+    #     y = dict['COLUMN_NAME']
+    #     TABLE_COLUMN_NAMES.append(y)
+
+    cursor = mysql.get_db().cursor()
+    cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+    # cursor.execute(
+        # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
     table_column_names_tuples = cursor.fetchall()
+    # print(table_column_names_tuples)
     TABLE_COLUMN_NAMES = []
 
-    for dict in table_column_names_tuples:
-        y = dict['COLUMN_NAME']
-        TABLE_COLUMN_NAMES.append(y)
+    for x in table_column_names_tuples:
+        # x = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(x[0])
 
     try:
         # making query
@@ -534,15 +594,27 @@ def edit_search():
     OP = -1
 
     # getting column names
-    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-    cursor.execute(
-        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    # cursor.execute(
+    #     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # table_column_names_tuples = cursor.fetchall()
+    # TABLE_COLUMN_NAMES = []
+
+    # for dict in table_column_names_tuples:
+    #     y = dict['COLUMN_NAME']
+    #     TABLE_COLUMN_NAMES.append(y)
+
+    cursor = mysql.get_db().cursor()
+    cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+    # cursor.execute(
+        # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
     table_column_names_tuples = cursor.fetchall()
+    # print(table_column_names_tuples)
     TABLE_COLUMN_NAMES = []
 
-    for dict in table_column_names_tuples:
-        y = dict['COLUMN_NAME']
-        TABLE_COLUMN_NAMES.append(y)
+    for x in table_column_names_tuples:
+        # x = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(x[0])
 
     # making query
     # query = "DELETE FROM "+table_name+" WHERE " + condition
@@ -552,31 +624,31 @@ def edit_search():
         " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
     # print(query)
 
-    try:
+    # try:
+    cur = mysql.get_db().cursor()
+    cur.execute(query)
+    mysql.get_db().commit()
+
+    OP = cur.fetchall()
+    # OP = [list(tup) for tup in OUTPUT]
+
+    if(mail_list==None and table_name=="alumni"):
+        q_query = "SELECT Full_Name,Email FROM "+table_name + \
+    " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
         cur = mysql.get_db().cursor()
-        cur.execute(query)
+        cur.execute(q_query)
         mysql.get_db().commit()
 
-        OP = cur.fetchall()
-        # OP = [list(tup) for tup in OUTPUT]
-
-        if(mail_list==None):
-            q_query = "SELECT Full_Name,Email FROM "+table_name + \
-        " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
-            cur = mysql.get_db().cursor()
-            cur.execute(q_query)
-            mysql.get_db().commit()
-
-            mail_list=cur.fetchall()
-        # print(OP)
-        # print(type(OP))
-        len_col = len(TABLE_COLUMN_NAMES)
-        # return render_template('display_entries.html', userDetails=OP, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
-        #                        display_edit_buttons="NO", display_edit_fields="NO", is_search_op="NO", len_col=len_col)
-        return render_template('tables_before_after.html', table_before = OP, table_after=None, table_name=table_name,
-                               table_col_names=TABLE_COLUMN_NAMES, search_msg=f'The results for "{search_key}" are:', second_table="NO", search_key=search_key)
-    except:
-        return render_template('errors.html', errorMessage="Search Error- Re-check your search key against the schema and current database entries.", table_name=table_name)
+        mail_list=cur.fetchall()
+    # print(OP)
+    # print(type(OP))
+    len_col = len(TABLE_COLUMN_NAMES)
+    # return render_template('display_entries.html', userDetails=OP, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
+    #                        display_edit_buttons="NO", display_edit_fields="NO", is_search_op="NO", len_col=len_col)
+    return render_template('tables_before_after.html', table_before = OP, table_after=None, table_name=table_name,
+                            table_col_names=TABLE_COLUMN_NAMES, search_msg=f'The results for "{search_key}" are:', second_table="NO", search_key=search_key)
+    # except:
+    return render_template('errors.html', errorMessage="Search Error- Re-check your search key against the schema and current database entries.", table_name=table_name)
 
 
 @app.route('/tables/download/<table_name>', methods=['GET'])
@@ -587,15 +659,27 @@ def service_download(table_name):
     table_name = table_name
 
     # getting column names
-    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-    cursor.execute(
-        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    # cursor.execute(
+    #     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # table_column_names_tuples = cursor.fetchall()
+    # TABLE_COLUMN_NAMES = []
+
+    # for dict in table_column_names_tuples:
+    #     y = dict['COLUMN_NAME']
+    #     TABLE_COLUMN_NAMES.append(y)
+
+    cursor = mysql.get_db().cursor()
+    cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+    # cursor.execute(
+        # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
     table_column_names_tuples = cursor.fetchall()
+    # print(table_column_names_tuples)
     TABLE_COLUMN_NAMES = []
 
-    for dict in table_column_names_tuples:
-        y = dict['COLUMN_NAME']
-        TABLE_COLUMN_NAMES.append(y)
+    for x in table_column_names_tuples:
+        # x = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(x[0])
 
     # Table Data
     cur = mysql.get_db().cursor()
@@ -630,15 +714,27 @@ def service_search_download():
     search_key = x['search_key']
 
     # get column names
-    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-    cursor.execute(
-        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    # cursor.execute(
+    #     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # table_column_names_tuples = cursor.fetchall()
+    # TABLE_COLUMN_NAMES = []
+
+    # for dict in table_column_names_tuples:
+    #     y = dict['COLUMN_NAME']
+    #     TABLE_COLUMN_NAMES.append(y)
+
+    cursor = mysql.get_db().cursor()
+    cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+    # cursor.execute(
+        # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
     table_column_names_tuples = cursor.fetchall()
+    # print(table_column_names_tuples)
     TABLE_COLUMN_NAMES = []
 
-    for dict in table_column_names_tuples:
-        y = dict['COLUMN_NAME']
-        TABLE_COLUMN_NAMES.append(y)
+    for x in table_column_names_tuples:
+        # x = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(x[0])
 
     # making query
     # query = "DELETE FROM "+table_name+" WHERE " + condition
@@ -695,15 +791,27 @@ def upload_file(table_name):
     table_data_before = cur.fetchall()
 
     # getting column names
-    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-    cursor.execute(
-        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    # cursor.execute(
+    #     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # table_column_names_tuples = cursor.fetchall()
+    # TABLE_COLUMN_NAMES = []
+
+    # for dict in table_column_names_tuples:
+    #     y = dict['COLUMN_NAME']
+    #     TABLE_COLUMN_NAMES.append(y)
+
+    cursor = mysql.get_db().cursor()
+    cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+    # cursor.execute(
+        # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
     table_column_names_tuples = cursor.fetchall()
+    # print(table_column_names_tuples)
     TABLE_COLUMN_NAMES = []
 
-    for dict in table_column_names_tuples:
-        y = dict['COLUMN_NAME']
-        TABLE_COLUMN_NAMES.append(y)
+    for x in table_column_names_tuples:
+        # x = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(x[0])
 
     # making query
     # query = "DELETE FROM "+table_name+" WHERE " + condition
@@ -752,14 +860,28 @@ def mail_alumni():
         print(table_name,search_key)
 
         
-        cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-        cursor.execute(
-            "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+        # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+        # cursor.execute(
+        #     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+        # table_column_names_tuples = cursor.fetchall()
+        # TABLE_COLUMN_NAMES = []
+        # for dict in table_column_names_tuples:
+        #     y = dict['COLUMN_NAME']
+        #     TABLE_COLUMN_NAMES.append(y)
+
+        cursor = mysql.get_db().cursor()
+        cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+        # cursor.execute(
+            # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
         table_column_names_tuples = cursor.fetchall()
+        # print(table_column_names_tuples)
         TABLE_COLUMN_NAMES = []
-        for dict in table_column_names_tuples:
-            y = dict['COLUMN_NAME']
-            TABLE_COLUMN_NAMES.append(y)
+
+        for x in table_column_names_tuples:
+            # x = dict['COLUMN_NAME']
+            TABLE_COLUMN_NAMES.append(x[0])
+
+
         cols = ", ".join(TABLE_COLUMN_NAMES)
         query = "SELECT Full_Name,Email FROM "+table_name + \
             " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
@@ -781,14 +903,29 @@ def mail_alumni():
         search_key = x['search_key']
 
         
-        cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-        cursor.execute(
-            "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+        # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+        # cursor.execute(
+        #     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+        # table_column_names_tuples = cursor.fetchall()
+        # TABLE_COLUMN_NAMES = []
+        # for dict in table_column_names_tuples:
+        #     y = dict['COLUMN_NAME']
+        #     TABLE_COLUMN_NAMES.append(y)
+
+        cursor = mysql.get_db().cursor()
+        cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+        # cursor.execute(
+            # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
         table_column_names_tuples = cursor.fetchall()
+        # print(table_column_names_tuples)
         TABLE_COLUMN_NAMES = []
-        for dict in table_column_names_tuples:
-            y = dict['COLUMN_NAME']
-            TABLE_COLUMN_NAMES.append(y)
+
+        for x in table_column_names_tuples:
+            # x = dict['COLUMN_NAME']
+            TABLE_COLUMN_NAMES.append(x[0])
+
+
+
         cols = ", ".join(TABLE_COLUMN_NAMES)
         query = "SELECT Full_Name,Email FROM "+table_name + \
             " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
@@ -823,14 +960,29 @@ def edit_mail():
     table_name = x['table_name']
     search_key = x['search_key']
 
-    cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
-    cursor.execute(
-        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # cursor = mysql.get_db().cursor(pymysql.cursors.DictCursor)
+    # cursor.execute(
+    #     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
+    # table_column_names_tuples = cursor.fetchall()
+    # TABLE_COLUMN_NAMES = []
+    # for dict in table_column_names_tuples:
+    #     y = dict['COLUMN_NAME']
+    #     TABLE_COLUMN_NAMES.append(y)
+
+
+    cursor = mysql.get_db().cursor()
+    cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+    # cursor.execute(
+        # "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=%s and TABLE_NAME=%s", ("alumni", table_name,))
     table_column_names_tuples = cursor.fetchall()
+    # print(table_column_names_tuples)
     TABLE_COLUMN_NAMES = []
-    for dict in table_column_names_tuples:
-        y = dict['COLUMN_NAME']
-        TABLE_COLUMN_NAMES.append(y)
+
+    for x in table_column_names_tuples:
+        # x = dict['COLUMN_NAME']
+        TABLE_COLUMN_NAMES.append(x[0])
+
+
     cols = ", ".join(TABLE_COLUMN_NAMES)
     query = "SELECT Full_Name,Email FROM "+table_name + \
         " WHERE CONCAT(" + cols + ") LIKE " + "'%" + search_key + "%'"
