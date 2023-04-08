@@ -57,10 +57,8 @@
 
     <div
         class="w-1/2 overflow-x-scroll h-[calc(100vh-16px)] m-2 p-2 border-2 border-white rounded-lg bg-[var(--color2)]">
-    <div class="container my-6 mx-auto">
-
+    <!-- <div class="container my-6 mx-auto">
         <form action="/alumni/mail/edit" method="POST">
-
             <input type="hidden" name='table_name' value={{table_name}}>
             <input type="hidden" name='search_key' value={{search_key}}>
 
@@ -71,53 +69,101 @@
             <button type="submit" name="remove_mail">
                 Remove
             </button>
-
-            
-
         </form>
-    </div>
+    </div> -->
 
     {% if enable_edit %}
+    
     <div class="container my-6 mx-auto">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex">
+                    <div class="capitalize text-center text-3xl mb-6">{{op}} Mail</div>
+                    <div>
+                        <form action="/alumni/mail/edit/update" method="POST">
 
-        <form action="/alumni/mail/edit/update" method="POST">
+                            <input type="hidden" name='table_name' value={{table_name}}>
+                            <input type="hidden" name='search_key' value={{search_key}}>
+                            <input type="text" name='alum_name'
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Alumnus Name">
+                            <br>
+                            <input type="text" name='alum_mail'
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Alumnus Email">
+                            
+                            <br>
+                            <button type="submit" name={{op}} >
+                                Execute
+                            </button>
+                
+                        </form>
+                    </div>
+                    <br>
+                    <div class="ml-auto">
+                        <form action="/alumni/mail" method="GET">
+                            <input type="hidden" name='name_table' value={{table_name}}>
+                            <input type="hidden" name='key_search' value={{search_key}}>
+                            <button type="submit" name='back_to_send'>Go Back to Mail Page</button>
+                        </form>
+                    </div>
+                    <br>
+                    <div class="ml-auto">
+                        <form action="/alumni/mail/edit" method="POST">
+                            <input type="hidden" name='table_name' value={{table_name}}>
+                            <input type="hidden" name='search_key' value={{search_key}}>
+                
+                            <button type="submit" name="add_mail">
+                                Add
+                            </button>
+                
+                            <button type="submit" name="remove_mail">
+                                Remove
+                            </button>
+                        </form>
+                    </div>
 
-            <input type="hidden" name='table_name' value={{table_name}}>
-            <input type="hidden" name='search_key' value={{search_key}}>
-            <input type="text" name='alum_name'
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Alumnus Name">
-            
-            <input type="text" name='alum_mail'
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Alumnus Email">
-            
-            
-            <button type="submit" name={{op}} >
-                Execute
-            </button>
-
-        </form>
-
-        <form action="/alumni/mail" method="GET">
-            <input type="hidden" name='name_table' value={{table_name}}>
-            <input type="hidden" name='key_search' value={{search_key}}>
-            <button type="submit" name='back_to_send'>Go Back to Mail Page</button>
-        </form>
-
+                </div>
+            </div>
+        </div>
     </div>
+    
     {% endif %}
 
 
     {% if enable_send %}
+
     <div class="container my-6 mx-auto">
-        <form action="/alumni/mail/send" method="POST">
-            <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Subject" style="height: 40px; width: 500px;" name="subject">
-            <textarea class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder = "Body" style="height: 300px; width: 500px; margin-top: 25px;" name="body"></textarea>
-            <button type="submit" name="send_mail" style="margin-top: 25px">Send The Mail</button>
-        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex">
+                    <div>
+                        <form action="/alumni/mail/send" method="POST">
+                            <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Subject" style="height: 40px; width: 500px;" name="subject">
+                            <textarea class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder = "Body" style="height: 300px; width: 500px; margin-top: 25px;" name="body"></textarea>
+                            <button type="submit" name="send_mail" style="margin-top: 25px">Send The Mail</button>
+                        </form>
+                    </div>
+                    <br>
+                    <div class="ml-auto">
+                        <form action="/alumni/mail/edit" method="POST">
+                            <input type="hidden" name='table_name' value={{table_name}}>
+                            <input type="hidden" name='search_key' value={{search_key}}>
+                
+                            <button type="submit" name="add_mail">
+                                Add
+                            </button>
+                
+                            <button type="submit" name="remove_mail">
+                                Remove
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     {% endif %}
 
