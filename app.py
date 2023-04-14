@@ -31,7 +31,7 @@ mail_list = None
 
 mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
 mysql_user1 = os.environ.get('MYSQL_USER1', 'root')
-mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'Joy@2003')
+mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'mySQLs3rv3r!')
 mysql_user2 = os.environ.get('MYSQL_USER2', 'student')
 mysql_password2 = os.environ.get('MYSQL_PASSWORD2', 'Pass@1234')
 mysql_user3 = os.environ.get('MYSQL_USER3', 'employee')
@@ -462,7 +462,7 @@ def edit_delete():
                                 table_col_names=TABLE_COLUMN_NAMES, second_table="YES")
     except Exception as e:
         # print(e)
-        return render_template('errors.html', errorMessage="Delete Error- Re-check your delete condition against the schema and current database entries.")
+        return render_template('errors.html', errorMessage=condition+" : Error in condition")
 
 
 # rename page render logic
