@@ -31,7 +31,7 @@ mail_list = None
 
 mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
 mysql_user1 = os.environ.get('MYSQL_USER1', 'root')
-mysql_password1 = os.environ.get('MYSQL_PASSWORD1', 'Joy@2003')
+mysql_password1 = os.environ.get('MYSQL_PASSWORD1', '2pml3xtd10A#')
 mysql_user2 = os.environ.get('MYSQL_USER2', 'student')
 mysql_password2 = os.environ.get('MYSQL_PASSWORD2', 'Pass@1234')
 mysql_user3 = os.environ.get('MYSQL_USER3', 'employee')
@@ -139,7 +139,23 @@ def tables():
     if session.get('logged_in', False) == False:
         return redirect('/')
     args = request.args
+
+    cursor = mysql.get_db().cursor()
+    cursor.execute("SHOW TABLES")
+    tables_in_db = cursor.fetchall()
+    cursor.close()
+    table_names_in_db = []
+    
+    for i in range(len(tables_in_db)):
+        table_names_in_db.append(tables_in_db[i][0])
+
     table_name = args.get('tableName', default=None, type=str)
+    if(table_name is not None and table_name not in table_names_in_db):
+        return render_template('errors.html', errorMessage="This table doesn't exist")
+
+
+
+
     if table_name is None:
         cursor = mysql.get_db().cursor()
         cursor.execute("SHOW TABLES")
@@ -192,6 +208,7 @@ def tables():
         #     TABLE_COLUMN_NAMES.append(x[0])
         # cursor.close()
         TABLE_COLUMN_NAMES = get_cols(mysql, table_name)
+        # TABLE_COLUMN_NAMES=[]
 
         if mysql == mysql1:
             return render_template('display_entries.html', userDetails=table_data, table_name=table_name, table_col_names=TABLE_COLUMN_NAMES, EntriesOrSchema="Entries",
