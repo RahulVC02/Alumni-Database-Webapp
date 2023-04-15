@@ -1,3 +1,6 @@
+### Note
+Please refer to https://github.com/RahulVC02/dbms_a3/blob/main/Alumni%20Database%20Management%20System_4.pdf for the final report of Assignment 4.
+
 # DBMS Assignment 3 - Alumni Database Webapp
 
 ## Made with Flask and MySQL
